@@ -1,8 +1,8 @@
-import { ACTIONS } from "../App";
+import { ACTIONS } from "../constants/actions";
 
 import "../styles.css";
 
-export function InverseButton({ dispatch, shifted, text }) {
+export function InverseKey({ dispatch, shifted, text }) {
   if (shifted) {
     return (
       <button

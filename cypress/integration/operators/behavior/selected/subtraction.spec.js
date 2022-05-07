@@ -1,7 +1,7 @@
 import { LocatorConstants } from "../../../../constants/locators";
-import { MessageConstants } from "../../../../constants/messages";
+import { OperationConstants } from "../../../../constants/operations";
 
-describe("Subtraction Operator Behavior - Will Yield Zero With No Previous Entry", () => {
+describe("Subtraction Operator Behavior - When Key Is Selected", () => {
   beforeEach(() => {
     cy.visit("http://localhost:3000/");
     cy.reload();
@@ -13,29 +13,39 @@ describe("Subtraction Operator Behavior - Will Yield Zero With No Previous Entry
     });
   });
 
-  it("No Previous Value Entered Will Yield 0 When Subtracted And Equals", () => {
-    cy.get(LocatorConstants.DISPLAYED_VALUE).then(
-      ($displayWhenNoDataEntered) => {
-        cy.wrap($displayWhenNoDataEntered).should("have.text", "0");
+  it("Subtraction Key Will Change Outline When Selected", () => {
+    cy.get(LocatorConstants.SUBTRACTION_KEY).then(
+      ($shiftKeyAfterKeyHasBeenSelected) => {
+        cy.wrap($shiftKeyAfterKeyHasBeenSelected).should(
+          "have.text",
+          OperationConstants.SUBTRACTION
+        );
+        cy.get(LocatorConstants.SUBTRACTION_KEY_NOT_SELECTED).should(
+          "exist"
+        );
 
         cy.get(LocatorConstants.SUBTRACTION_KEY).click();
-        cy.get(LocatorConstants.EQUALS_KEY).click();
-
-        cy.get(LocatorConstants.DISPLAYED_VALUE).then(
-          ($displayAfterSelectingSubtractedAndEquals) => {
-            cy.wrap($displayAfterSelectingSubtractedAndEquals).should(
+        cy.get(LocatorConstants.SUBTRACTION_KEY).then(
+          ($shiftKeyAfterKeyHasBeenSelected) => {
+            cy.wrap($shiftKeyAfterKeyHasBeenSelected).should(
               "have.text",
-              "0"
+              OperationConstants.SUBTRACTION
+            );
+            cy.get(LocatorConstants.SUBTRACTION_KEY_WHEN_SELECTED).should(
+              "exist"
             );
 
-            cy.wrap($displayAfterSelectingSubtractedAndEquals).should(
-              "not.have.text",
-              MessageConstants.NOT_A_NUMBER
-            );
-
-            cy.wrap($displayAfterSelectingSubtractedAndEquals).should(
-              "not.have.text",
-              "NaN"
+            cy.get(LocatorConstants.MULTIPLICATION_KEY).click();
+            cy.get(LocatorConstants.SUBTRACTION_KEY).then(
+              ($shiftKeyAfterKeyHasBeenSelected) => {
+                cy.wrap($shiftKeyAfterKeyHasBeenSelected).should(
+                  "have.text",
+                  OperationConstants.SUBTRACTION
+                );
+                cy.get(LocatorConstants.SUBTRACTION_KEY_NOT_SELECTED).should(
+                  "exist"
+                );
+              }
             );
           }
         );

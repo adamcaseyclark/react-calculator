@@ -1,4 +1,4 @@
-import { LocatorConstants } from "../../../constants/locators";
+import { LocatorConstants } from "../../../../constants/locators";
 
 describe("10 Raised To The Displayed Number Key (User Given Exponent)", () => {
   beforeEach(() => {
@@ -41,7 +41,7 @@ describe("10 Raised To The Displayed Number Key (User Given Exponent)", () => {
     );
   });
 
-  it("Will Only Yield 4", () => {
+  it("Will Only Yield 3 Repeated", () => {
     cy.get(LocatorConstants.TEN_TO_THE_POWER_OF).click();
     cy.get(LocatorConstants.DISPLAYED_VALUE).then(
       ($displayAfterNotANumberMessageAndAllClear) => {

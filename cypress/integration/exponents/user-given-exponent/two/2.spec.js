@@ -1,4 +1,4 @@
-import { LocatorConstants } from "../../../constants/locators";
+import { LocatorConstants } from "../../../../constants/locators";
 
 describe("2 Raised To The Displayed Number Key (User Given Exponent)", () => {
     beforeEach(() => {

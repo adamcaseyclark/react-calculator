@@ -1,6 +1,6 @@
 import "../styles.css";
 
-export function SingleLogKey({ dispatch, action, base }) {
+export function LogKey({ dispatch, action, base }) {
   return (
     <button
       onClick={() =>

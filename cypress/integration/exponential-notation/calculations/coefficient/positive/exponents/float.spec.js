@@ -23,8 +23,8 @@ describe("Exponential Notation (EE) Calculation - Positive Exponent", () => {
 
             cy.get(LocatorConstants.EQUALS_KEY).click();
 
-            cy.get(LocatorConstants.CLEAR_KEY).then(($clearKeyDisplayedText) => {
-                cy.wrap($clearKeyDisplayedText).should("have.text", "12");
+            cy.get(LocatorConstants.DISPLAYED_VALUE).then(($displayAfterCalculating) => {
+                cy.wrap($displayAfterCalculating).should("have.text", "12");
             });
         });
     });

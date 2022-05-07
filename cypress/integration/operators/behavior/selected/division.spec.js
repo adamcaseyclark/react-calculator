@@ -1,7 +1,7 @@
 import { LocatorConstants } from "../../../../constants/locators";
-import { MessageConstants } from "../../../../constants/messages";
+import { OperationConstants } from "../../../../constants/operations";
 
-describe("Division Operator Behavior - Will Yield Not A Number Message With No Previous Entry", () => {
+describe("Division Operator Behavior - When Key Is Selected", () => {
   beforeEach(() => {
     cy.visit("http://localhost:3000/");
     cy.reload();
@@ -13,29 +13,35 @@ describe("Division Operator Behavior - Will Yield Not A Number Message With No P
     });
   });
 
-  it("No Previous Value Entered Will Yield Not A Number Message When Divided And Equals", () => {
-    cy.get(LocatorConstants.DISPLAYED_VALUE).then(
-      ($displayWhenNoDataEntered) => {
-        cy.wrap($displayWhenNoDataEntered).should("have.text", "0");
+  it("Addition Key Will Change Outline When Selected", () => {
+    cy.get(LocatorConstants.DIVISION_KEY).then(
+      ($shiftKeyAfterKeyHasBeenSelected) => {
+        cy.wrap($shiftKeyAfterKeyHasBeenSelected).should(
+          "have.text",
+          OperationConstants.DIVISION
+        );
+        cy.get(LocatorConstants.DIVISION_KEY_NOT_SELECTED).should("exist");
 
         cy.get(LocatorConstants.DIVISION_KEY).click();
-        cy.get(LocatorConstants.EQUALS_KEY).click();
-
-        cy.get(LocatorConstants.DISPLAYED_VALUE).then(
-          ($displayAfterSelectingDividedAndEquals) => {
-            cy.wrap($displayAfterSelectingDividedAndEquals).should(
+        cy.get(LocatorConstants.DIVISION_KEY).then(
+          ($shiftKeyAfterKeyHasBeenSelected) => {
+            cy.wrap($shiftKeyAfterKeyHasBeenSelected).should(
               "have.text",
-              MessageConstants.NOT_A_NUMBER
+              OperationConstants.DIVISION
             );
+            cy.get(LocatorConstants.DIVISION_KEY_WHEN_SELECTED).should("exist");
 
-            cy.wrap($displayAfterSelectingDividedAndEquals).should(
-              "not.have.text",
-              "NaN"
-            );
-
-            cy.wrap($displayAfterSelectingDividedAndEquals).should(
-              "not.have.text",
-              "0"
+            cy.get(LocatorConstants.ADDITION_KEY).click();
+            cy.get(LocatorConstants.DIVISION_KEY).then(
+              ($shiftKeyAfterKeyHasBeenSelected) => {
+                cy.wrap($shiftKeyAfterKeyHasBeenSelected).should(
+                  "have.text",
+                  OperationConstants.DIVISION
+                );
+                cy.get(LocatorConstants.DIVISION_KEY_NOT_SELECTED).should(
+                  "exist"
+                );
+              }
             );
           }
         );

@@ -1,4 +1,4 @@
-import { LocatorConstants } from "../../constants/locators";
+import { LocatorConstants } from "../../../constants/locators";
 
 describe("Operator Functionality - Will Overwrite", () => {
   beforeEach(() => {

@@ -1,8 +1,6 @@
-import { ACTIONS } from "../App";
-
 import "../styles.css";
 
-export function ExponentButton({ dispatch, action, shifted, text, exponent }) {
+export function ExponentKey({ dispatch, action, shifted, text, exponent }) {
   if (shifted) {
     return (
       <button

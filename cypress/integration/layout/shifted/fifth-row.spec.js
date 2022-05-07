@@ -1,8 +1,8 @@
 import { LocatorConstants } from "../../../constants/locators";
-import { SinCosTanConstants } from "../../../constants/sin-cos-tan";
 import { NumberConstants } from "../../../constants/numbers";
+import { SinCosTanConstants } from "../../../constants/sin-cos-tan";
 
-describe("Standard Keyboard Layout Verification", () => {
+describe("Shifted View Keyboard Layout Verification", () => {
   beforeEach(() => {
     cy.visit("http://localhost:3000/");
     cy.reload();
@@ -10,11 +10,21 @@ describe("Standard Keyboard Layout Verification", () => {
       cy.wrap($displayAfterReload).should("have.text", "0");
       cy.get(LocatorConstants.CLEAR_KEY).then(($clearKeyDisplayedText) => {
         cy.wrap($clearKeyDisplayedText).should("have.text", "AC");
+        cy.get(LocatorConstants.SHIFT_KEY).click();
+        cy.get(LocatorConstants.SHIFT_KEY).then(
+            ($shiftKeyAfterKeyHasBeenSelected) => {
+              cy.wrap($shiftKeyAfterKeyHasBeenSelected).should(
+                  "have.text",
+                  "2nd"
+              );
+              cy.get(LocatorConstants.SHIFT_KEY_WHEN_SELECTED).should("exist");
+            }
+        );
       });
     });
   });
 
-  it("Fifth Row Of Standard Keyboard - 10 Keys", () => {
+  it("Fifth Row Of Shifted View Keyboard - 10 Keys", () => {
     cy.get(LocatorConstants.ALL_KEYS).then(($keys) => {
       cy.wrap($keys).each(($key, $index) => {
         if ($index === 40) cy.wrap($key).should("have.text", "Rad");

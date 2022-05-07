@@ -1,5 +1,4 @@
-export const RadicalConstants = {
+export const MessageConstants = {
     NOT_A_NUMBER: "Not a number",
-    CUBED: "x^3",
-    USER_GIVEN: "x^y",
+    NOT_IMPLEMENTED: "Not Implemented"
 };

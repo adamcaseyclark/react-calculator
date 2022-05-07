@@ -1,133 +1,76 @@
 import { useReducer } from "react";
 
-import { AddDigitButton } from "./components/AddDigitButton";
-import { AddOperationButton } from "./components/AddOperationButton";
-import { RenderHtml } from "./components/RenderHtml";
+import { DigitKey } from "./components/DigitKey";
+import { ExponentKey } from "./components/ExponentKey";
+import { InverseKey } from "./components/InverseKey";
+import { OperatorKey } from "./components/OperatorKey";
+import { LogKey } from "./components/LogKey";
+import { SingleExponentKey } from "./components/SingleExponentKey";
 
-import { ElementTextConstants } from "./constants/element-text";
+import { calculate } from "./helpers/calculate";
+
+import { DEBUGGING_MODE } from "./constants/globals";
+import { ACTIONS } from "./constants/actions";
+import { RegexConstants } from "./constants/regex";
+import { TextConstants } from "./constants/text";
+
+import {
+  PI,
+  E,
+  NOT_IMPLEMENTED_MESSAGE,
+  NOT_A_NUMBER_MESSAGE,
+} from "./constants/values";
 
 import "./styles.css";
-
-const E = "2.718281828459045";
-const PI = "3.141592653589793";
-
-const NOT_A_NUMBER = "Not a number";
-
-export const ACTIONS = {
-  ADD_DIGIT_OR_PERFORM_ACTION: "ADD_DIGIT_OR_PERFORM_ACTION", // ALL NUMBERS
-  ADD_OPERATOR: "ADD_OPERATOR", // DIVISION, MULTIPLICATION, SUBTRACTION, ADDITION
-  GET_SPECIFIED_NUMBER: "GET_SPECIFIED_NUMBER", // PI, E
-
-  // ROW ONE KEYS
-  ADD_RIGHT_PARENTHESIS: "ADD_RIGHT_PARENTHESIS",
-  ADD_LEFT_PARENTHESIS: "ADD_LEFT_PARENTHESIS",
-  REMOVE_VALUE_FROM_MEMORY: "REMOVE_VALUE_FROM_MEMORY",
-  ADD_OR_MODIFY_MEMORY_VALUE: "ADD_OR_MODIFY_MEMORY_VALUE", // m+, m-
-  RECALL_VALUE_FROM_MEMORY: "RECALL_VALUE_FROM_MEMORY",
-  PERFORM_ALL_CLEAR: "PERFORM_ALL_CLEAR", // AC & C
-  PERFORM_CLEAR: "PERFORM_CLEAR", // AC & C
-  CHANGE_THE_SIGN_OF_NUMBER: "CHANGE_THE_SIGN_OF_NUMBER",
-  COVERT_TO_PERCENTAGE: "COVERT_TO_PERCENTAGE",
-  // DIVISION
-
-  // ROW TWO KEYS
-  PERFORM_SHIFT: "PERFORM_SHIFT",
-  RAISED_TO_THE_POWER: "RAISED_TO_THE_POWER", // SQUARED, CUBED
-  // ??
-  NUMBER_RAISED_T0_THE_POWER_OF_THE_DISPLAYED_NUMBER:
-    "NUMBER_RAISED_T0_THE_POWER_OF_THE_DISPLAYED_NUMBER", // 2 & 10
-  // 7, 8, 9
-  // MULTIPLICATION
-
-  // ROW THREE KEYS
-  GET_THE_INVERSE_OF_DISPLAYED_NUMBER: "GET_THE_INVERSE_OF_DISPLAYED_NUMBER",
-
-  PERFORM_BASE_LOGARITHM: "PERFORM_BASE_LOGARITHM",
-  // 4, 5, 6
-
-  // ROW FOUR KEYS
-  GET_FACTORIAL_FOR_GIVEN_VALUE: "GET_FACTORIAL_FOR_GIVEN_VALUE",
-  // SIN, COS, TAN, E
-  ENTER_EXPONENTIAL_NOTATION: "ENTER_EXPONENTIAL_NOTATION",
-  // 1, 2, 3 KEYS
-  // ADDITION KEY
-
-  // ROW FIVE KEYS
-  // RAD KEY, SINH KEY, COSH KEY, TANH KEY, PI KEY (HANDLED ABOVE),
-  GET_RANDOM_NUMBER: "GET_RANDOM_NUMBER",
-  // 0 KEY, DECIMAL (HANDLED ABOVE)
-  CALCULATE: "CALCULATE",
-
-  DELETE_DIGIT: "DELETE_DIGIT",
-};
-
-function calculate({ current, previous, operator }) {
-  const currentAsANumber = parseFloat(current);
-  const previousAsANumber = parseFloat(previous);
-
-  let calculation = "";
-
-  switch (operator) {
-    case ElementTextConstants.DIVISION_SIGN:
-      calculation = previousAsANumber / currentAsANumber;
-      break;
-    case ElementTextConstants.MULTIPLICATION_SIGN:
-      calculation = previousAsANumber * currentAsANumber;
-      break;
-    case ElementTextConstants.SUBTRACTION_SIGN:
-      calculation = previousAsANumber - currentAsANumber;
-      break;
-    case ElementTextConstants.ADDITION_SIGN:
-      calculation = previousAsANumber + currentAsANumber;
-      break;
-  }
-  return calculation.toString();
-}
 
 function reducer(state, { type, payload }) {
   switch (type) {
     case ACTIONS.ADD_DIGIT_OR_PERFORM_ACTION:
       if (
-        !payload.digit.match(/[0-9]/) &&
-        payload.digit !== "EE" &&
-        payload.digit !== "."
+        !payload.digit.match(RegexConstants.ANY_SINGLE_DIGIT_ZERO_THROUGH_NINE)
       ) {
         return {
           ...state,
           current:
-            payload.digit === "Rand"
+            payload.digit === TextConstants.RANDOM
               ? Math.random()
-              : payload.digit === "e"
+              : payload.digit === TextConstants.EULERS_NUMBER
               ? E
               : PI,
-        };
-      }
-
-      if (payload.digit === "." && state.current.includes(".")) {
-        return {
-          current: state.current,
-        };
-      } else if (payload.digit === "." && state.current === "0") {
-        return {
-          current: "0.",
-        };
-      }
-
-      if (payload.digit === "EE") {
-        return {
-          current: `${state.current || "0"} e 0`,
         };
       }
 
       if (state.current === "0" && payload.digit === "0") {
         return {
           ...state,
+          statusOfAllClear: false,
         };
       }
 
-      if (state.current === NOT_A_NUMBER) {
+      // EXPONENTIAL NOTATION
+      if (
+        state.current.match(
+          RegexConstants.EXPONENTIAL_FORMAT_ANY_COEFFICIENT_ANY_EXPONENT
+        )
+      ) {
+        const coefficient = state.current.split(" e ")[0];
+        const exponent = state.current.split(" e ")[1];
+
         return {
+          ...state,
+          current: `${coefficient} e ${exponent.replace(/^0/, "")}${
+            payload.digit
+          }`,
+        };
+      }
+
+      if (state.lastKey === TextConstants.EQUALS_SIGN) {
+        return {
+          ...state,
           current: payload.digit,
+          previous: state.current,
+          lastKey: null,
+          statusOfAllClear: false,
         };
       }
 
@@ -139,37 +82,78 @@ function reducer(state, { type, payload }) {
       };
 
     case ACTIONS.ADD_OPERATOR:
-      if (state.current !== NOT_A_NUMBER) {
-        return {
-          ...state,
+      if (state.current !== NOT_A_NUMBER_MESSAGE) {
+
+        // after equals - now operator
+        // want current to stay until next key
+
+
+
+        const common = {
           current: "0",
           previous: state.current,
           operator: payload.operator,
-          saved: true,
+          statusOfAllClear: false,
+          lastKey: payload.operator,
+          divisionIsSelected: false,
+          multiplicationIsSelected: false,
+          subtractionIsSelected: false,
+          additionIsSelected: false,
         };
+
+        if (payload.operator === TextConstants.DIVISION_SIGN) {
+          return {
+            ...state,
+            ...common,
+            divisionIsSelected: true,
+          };
+        } else if (payload.operator === TextConstants.MULTIPLICATION_SIGN) {
+          return {
+            ...state,
+            ...common,
+            multiplicationIsSelected: true,
+          };
+        } else if (payload.operator === TextConstants.SUBTRACTION_SIGN) {
+          return {
+            ...state,
+            ...common,
+            subtractionIsSelected: true,
+          };
+        } else if (payload.operator === TextConstants.ADDITION_SIGN) {
+          return {
+            ...state,
+            ...common,
+            additionIsSelected: true,
+          };
+        }
       }
 
       return {
         ...state,
-        current: "0",
-        previous: state.current,
-        operator: payload.operator,
-        saved: true,
       };
 
     case ACTIONS.REMOVE_VALUE_FROM_MEMORY:
       return {
         ...state,
-        memory: "0",
+        memory: TextConstants.RESET_VALUE,
       };
 
     case ACTIONS.ADD_OR_MODIFY_MEMORY_VALUE:
+      if (
+        state.current !== NOT_A_NUMBER_MESSAGE &&
+        state.current !== NOT_IMPLEMENTED_MESSAGE
+      ) {
+        return {
+          ...state,
+          memory:
+            payload.key === TextConstants.MEMORY_PLUS
+              ? `${parseInt(state.memory) + parseInt(state.current)}`
+              : `${parseInt(state.memory) - parseInt(state.current)}`,
+        };
+      }
+
       return {
         ...state,
-        memory:
-          payload.key === ElementTextConstants.MEMORY_PLUS
-            ? `${parseInt(state.memory) + parseInt(state.current)}`
-            : `${parseInt(state.memory) - parseInt(state.current)}`,
       };
 
     case ACTIONS.RECALL_VALUE_FROM_MEMORY:
@@ -178,62 +162,58 @@ function reducer(state, { type, payload }) {
         current: state.memory,
       };
 
-    case ACTIONS.PERFORM_ALL_CLEAR:
-      if (state.saved) {
-        return {
-          ...state,
-          current: "0",
-          previous: null,
-          saved: false,
-        };
-      }
-
-      return { ...state, current: 0 };
-
     case ACTIONS.PERFORM_CLEAR:
-      if (state.saved) {
+      if (state.statusOfAllClear === false) {
         return {
           ...state,
-          current: state.previous,
-          previous: null,
-          saved: false,
+          operator: null,
+          statusOfAllClear: true,
+          divisionIsSelected: false,
+          multiplicationIsSelected: false,
+          subtractionIsSelected: false,
+          additionIsSelected: false,
         };
-      }
-
-      return { ...state, current: 0 };
-
-    case ACTIONS.CHANGE_THE_SIGN_OF_NUMBER:
-      if (state.current.match(/0.0+/)) {
-        return { current: 0 };
-      }
-
-      if (state.current.match(/^-[0-9]+/)) {
-        return { current: state.current.slice(1) };
       }
 
       return {
-        current: `-${state.current}`,
+        ...state,
+        previous: null,
+        current: TextConstants.RESET_VALUE,
+      };
+
+    case ACTIONS.CHANGE_THE_SIGN_OF_NUMBER:
+      if (
+        state.current !== NOT_A_NUMBER_MESSAGE &&
+        state.current !== NOT_IMPLEMENTED_MESSAGE
+      ) {
+        if (state.current.match(/0.0+/)) {
+          return { ...state, current: "0" };
+        }
+
+        if (state.current.match(/^-[0-9]+/)) {
+          return { ...state, current: state.current.slice(1) };
+        }
+
+        return {
+          ...state,
+          current: `-${state.current}`,
+        };
+      }
+
+      return {
+        ...state,
       };
 
     case ACTIONS.COVERT_TO_PERCENTAGE:
-      if (state.current !== NOT_A_NUMBER) {
-        if (state.current.length <= 2) {
-          return {
-            ...state,
-            current: `0.${
-              state.current.length === 1
-                ? `0${state.current}`
-                : `${state.current}`
-            }`,
-          };
-        }
-
-        if (!state.current.includes(".")) {
-          return {
-            ...state,
-            current: `${state.current.slice(0, -2)}.${state.current.slice(-2)}`,
-          };
-        }
+      if (
+        state.current !== NOT_A_NUMBER_MESSAGE &&
+        state.current !== NOT_IMPLEMENTED_MESSAGE
+      ) {
+        return {
+          ...state,
+          current: Number(state.current) / 100,
+          lastKey: TextConstants.PERCENTAGE_SYMBOL,
+        };
       }
 
       return {
@@ -247,14 +227,14 @@ function reducer(state, { type, payload }) {
       };
 
     case ACTIONS.RAISED_TO_THE_POWER:
-      if (payload.key === "x^2") {
+      if (payload.key === TextConstants.X_RAISED_TO_THE_SECOND_POWER) {
         return {
           ...state,
           current: parseFloat(state.current) * parseFloat(state.current),
         };
       }
 
-      if (payload.key === "x^3") {
+      if (payload.key === TextConstants.X_RAISED_TO_THE_THIRD_POWER) {
         return {
           ...state,
           current:
@@ -290,34 +270,43 @@ function reducer(state, { type, payload }) {
       };
 
     case ACTIONS.ENTER_EXPONENTIAL_NOTATION:
-      if (state.current === null) {
-        return {
-          current: `0 e 0`,
-        };
-      }
-      break;
-
-    case ACTIONS.PERFORM_BASE_LOGARITHM:
-      if (state.current === 0) {
-        return {
-          current: NOT_A_NUMBER,
-        };
-      }
-
       return {
-        state,
+        ...state,
+        current: `${state.current || "0"} e 0`,
       };
 
-    case ACTIONS.GET_THE_INVERSE_OF_DISPLAYED_NUMBER:
-      if (state.current === 0 || state.current === NOT_A_NUMBER) {
+    case ACTIONS.PERFORM_BASE_LOGARITHM:
+      if (state.current === "0") {
         return {
-          current: NOT_A_NUMBER,
+          ...state,
+          current: NOT_A_NUMBER_MESSAGE,
         };
       }
 
       return {
         ...state,
-        current: 1 / parseInt(state.current),
+        current: NOT_IMPLEMENTED_MESSAGE,
+      };
+
+    case ACTIONS.GET_THE_INVERSE_OF_DISPLAYED_NUMBER:
+      if (
+        state.current !== NOT_A_NUMBER_MESSAGE &&
+        state.current !== NOT_IMPLEMENTED_MESSAGE
+      ) {
+        if (state.current === "0") {
+          return {
+            current: NOT_A_NUMBER_MESSAGE,
+          };
+        }
+
+        return {
+          ...state,
+          current: 1 / parseInt(state.current),
+        };
+      }
+
+      return {
+        ...state,
       };
 
     case ACTIONS.GET_FACTORIAL_FOR_GIVEN_VALUE:
@@ -343,33 +332,119 @@ function reducer(state, { type, payload }) {
 
       return {
         ...state,
-        current: NOT_A_NUMBER,
+        current: NOT_A_NUMBER_MESSAGE,
+      };
+
+    case ACTIONS.ADD_DECIMAL_POINT:
+      if (
+        state.current !== NOT_A_NUMBER_MESSAGE &&
+        state.current !== NOT_IMPLEMENTED_MESSAGE
+      ) {
+        if (
+          state.lastKey === TextConstants.PERCENTAGE_SYMBOL ||
+          state.current === "0"
+        ) {
+          return {
+            ...state,
+            current: "0.",
+            lastKey: null,
+          };
+        }
+
+        if (!state.current.includes(TextConstants.DECIMAL_POINT)) {
+          return {
+            ...state,
+            current: `${state.current}${TextConstants.DECIMAL_POINT}`,
+          };
+        }
+      }
+
+      return {
+        ...state,
       };
 
     case ACTIONS.CALCULATE:
       // WHEN REPEATEDLY PUSHING EQUALS
 
+      const resetOperators = {
+        divisionIsSelected: false,
+        multiplicationIsSelected: false,
+        subtractionIsSelected: false,
+        additionIsSelected: false,
+      };
+
+      if (
+        state.current.match(
+          RegexConstants.EXPONENTIAL_FORMAT_NATURAL_COEFFICIENT_WITH_ANY_EXPONENT
+        )
+      ) {
+        return {
+          ...state,
+          current:
+            Array(Number(state.current.split(" e ")[1]))
+              .fill(10)
+              .reduce((number, memo) => number * memo) *
+            Number(state.current.split(" e ")[0]),
+          ...resetOperators,
+        };
+      }
+
       return {
         ...state,
         current: calculate(state),
-        previous: state.current,
+        previous: null,
+        operator: null,
+        lastKey: TextConstants.EQUALS_SIGN,
+        ...resetOperators,
       };
+
+    case ACTIONS.NOT_IMPLEMENTED: {
+      return {
+        ...state,
+        current: NOT_IMPLEMENTED_MESSAGE,
+      };
+    }
   }
 }
 
 function App() {
-  const [{ current, previous, operation, memory, shifted, saved }, dispatch] =
-    useReducer(reducer, {
-      current: "0",
-      shifted: false,
-      memory: "0",
-    });
+  const [
+    {
+      current,
+      previous,
+      operator,
+      memory,
+      shifted,
+      calculated,
+      lastKey,
+      statusOfAllClear,
+      divisionIsSelected,
+      multiplicationIsSelected,
+      subtractionIsSelected,
+      additionIsSelected,
+    },
+    dispatch,
+  ] = useReducer(reducer, {
+    display: "0",
+    current: "0",
+    shifted: false,
+    memory: "0",
+    calculated: false,
+    statusOfAllClear: true,
+    divisionIsSelected: false,
+    multiplicationIsSelected: false,
+    subtractionIsSelected: false,
+    additionIsSelected: false,
+  });
 
   return (
     <div className="calculator-grid">
       <div className="output">
-        <div className="previous">
-          {previous} {operation}
+        <div
+          className="previous"
+          style={{ display: DEBUGGING_MODE ? "block" : "none" }}
+        >
+          previous="{previous}" operator="{operator}" lastKey="{lastKey}'"
         </div>
         <div className="current">{current}</div>
       </div>
@@ -378,48 +453,49 @@ function App() {
       <button
         onClick={() => dispatch({ type: ACTIONS.REMOVE_VALUE_FROM_MEMORY })}
       >
-        {ElementTextConstants.MEMORY_CLEAR}
+        {TextConstants.MEMORY_CLEAR}
       </button>
       <button
         onClick={() =>
           dispatch({
             type: ACTIONS.ADD_OR_MODIFY_MEMORY_VALUE,
-            payload: { key: ElementTextConstants.MEMORY_PLUS },
+            payload: { key: TextConstants.MEMORY_PLUS },
           })
         }
       >
-        {ElementTextConstants.MEMORY_PLUS}
+        {TextConstants.MEMORY_PLUS}
       </button>
       <button
         onClick={() =>
           dispatch({
             type: ACTIONS.ADD_OR_MODIFY_MEMORY_VALUE,
-            payload: { key: ElementTextConstants.MEMORY_MINUS },
+            payload: { key: TextConstants.MEMORY_MINUS },
           })
         }
       >
-        {ElementTextConstants.MEMORY_MINUS}
+        {TextConstants.MEMORY_MINUS}
       </button>
       <button
         className={memory !== "0" ? "selected" : ""}
         onClick={() => dispatch({ type: ACTIONS.RECALL_VALUE_FROM_MEMORY })}
       >
-        {ElementTextConstants.MEMORY_RECALL}
+        {TextConstants.MEMORY_RECALL}
       </button>
-      <button onClick={() => dispatch({ type: ACTIONS.PERFORM_ALL_CLEAR })}>
-        {saved ? ElementTextConstants.CLEAR : ElementTextConstants.ALL_CLEAR}
+      <button onClick={() => dispatch({ type: ACTIONS.PERFORM_CLEAR })}>
+        {statusOfAllClear ? TextConstants.ALL_CLEAR : TextConstants.CLEAR}
       </button>
       <button
         onClick={() => dispatch({ type: ACTIONS.CHANGE_THE_SIGN_OF_NUMBER })}
       >
-        +/-
+        {TextConstants.NEGATE_DISPLAYED_VALUE_SIGN}
       </button>
       <button onClick={() => dispatch({ type: ACTIONS.COVERT_TO_PERCENTAGE })}>
-        %
+        {TextConstants.PERCENTAGE_SYMBOL}
       </button>
-      <AddOperationButton
+      <OperatorKey
+        statusOfKey={divisionIsSelected}
         dispatch={dispatch}
-        operator={ElementTextConstants.DIVISION_SIGN}
+        operator={TextConstants.DIVISION_SIGN}
       />
       <button
         className={shifted ? "selected" : ""}
@@ -427,145 +503,183 @@ function App() {
       >
         2nd
       </button>
+
+      {/*<SingleExponentKey*/}
+      {/*  dispatch={dispatch}*/}
+      {/*  action={ACTIONS.RAISED_TO_THE_POWER}*/}
+      {/*  key={TextConstants.SECOND_POWER}*/}
+      {/*  text={TextConstants.VARIABLE_X}*/}
+      {/*  exponent={TextConstants.NUMBER_TWO}*/}
+      {/*/>*/}
+
       <button
         onClick={() =>
           dispatch({
             type: ACTIONS.RAISED_TO_THE_POWER,
-            payload: { key: "x^2" },
+            payload: { key: TextConstants.SECOND_POWER },
           })
         }
       >
-        x<sup>2</sup>
+        {TextConstants.VARIABLE_X}
+        <sup>{TextConstants.NUMBER_TWO}</sup>
       </button>
       <button
         onClick={() =>
           dispatch({
             type: ACTIONS.RAISED_TO_THE_POWER,
-            payload: { key: "x^3" },
+            payload: { key: TextConstants.THIRD_POWER },
           })
         }
       >
-        x<sup>3</sup>
+        {TextConstants.VARIABLE_X}
+        <sup>{TextConstants.NUMBER_THREE}</sup>
       </button>
       <button>
-        x<sup>y</sup>
+        {TextConstants.VARIABLE_X}
+        <sup>{TextConstants.VARIABLE_Y}</sup>
       </button>
-      <button>
-        {shifted
-          ? ElementTextConstants.RAISE_THE_NEXT_VALUE_ENTERED_TO_THE_POWER_OF_THE_DISPLAYED_VALUE
-          : ElementTextConstants.E_TO_THE_POWER_OF_THE_NEXT_ENTERED_VALUE}
-      </button>
-      <button
-        onClick={() =>
-          dispatch({
-            type: ACTIONS.NUMBER_RAISED_T0_THE_POWER_OF_THE_DISPLAYED_NUMBER,
-          })
-        }
-      >
-        {shifted
-          ? ElementTextConstants.TWO_TO_THE_POWER_OF_THE_NEXT_ENTERED_VALUE
-          : ElementTextConstants.TEN_TO_THE_POWER_OF_THE_NEXT_ENTERED_VALUE}
-      </button>
-      <AddDigitButton dispatch={dispatch} digit="7" />
-      <AddDigitButton dispatch={dispatch} digit="8" />
-      <AddDigitButton dispatch={dispatch} digit="9" />
-      <AddOperationButton
+      <ExponentKey
         dispatch={dispatch}
-        operator={ElementTextConstants.MULTIPLICATION_SIGN}
+        action={ACTIONS.NUMBER_RAISED_T0_THE_POWER_OF_THE_DISPLAYED_NUMBER}
+        shifted={shifted}
+        text={[TextConstants.EULERS_NUMBER, TextConstants.VARIABLE_Y]}
+        exponent={TextConstants.VARIABLE_X}
+      />
+      <ExponentKey
+        dispatch={dispatch}
+        action={ACTIONS.NUMBER_RAISED_T0_THE_POWER_OF_THE_DISPLAYED_NUMBER}
+        shifted={shifted}
+        text={[TextConstants.NUMBER_TEN, TextConstants.NUMBER_TWO]}
+        exponent={TextConstants.VARIABLE_X}
+      />
+      <DigitKey dispatch={dispatch} digit={TextConstants.NUMBER_KEY_SEVEN} />
+      <DigitKey dispatch={dispatch} digit={TextConstants.NUMBER_KEY_EIGHT} />
+      <DigitKey dispatch={dispatch} digit={TextConstants.NUMBER_KEY_NINE} />
+      <OperatorKey
+        statusOfKey={multiplicationIsSelected}
+        dispatch={dispatch}
+        operator={TextConstants.MULTIPLICATION_SIGN}
       />
       <button
         onClick={() =>
           dispatch({ type: ACTIONS.GET_THE_INVERSE_OF_DISPLAYED_NUMBER })
         }
       >
-        <sup>1</sup>/<sub>x</sub>
+        <sup>{TextConstants.NUMBER_ONE}</sup>/
+        <sub>{TextConstants.VARIABLE_X}</sub>
       </button>
       <button>
-        <sup>2</sup>√x
+        <sup>{TextConstants.NUMBER_TWO}</sup>
+        {TextConstants.RADICAL_X}
       </button>
       <button>
-        <sup>3</sup>√x
+        <sup>{TextConstants.NUMBER_THREE}</sup>
+        {TextConstants.RADICAL_X}
       </button>
       <button>
-        <sup>y</sup>√x
+        <sup>{TextConstants.VARIABLE_Y}</sup>
+        {TextConstants.RADICAL_X}
       </button>
-      <button>
-        {shifted
-          ? ElementTextConstants.LOG_OF_THE_DISPLAYED_VALUE_WITH_THE_BASE_OF_THE_NEXT_VALUE
-          : ElementTextConstants.NATURAL_LOGARITHM}
-      </button>
-      <button
-        onClick={() => dispatch({ type: ACTIONS.PERFORM_BASE_LOGARITHM })}
-      >
-        {shifted ? "log<sub>2</sub>" : "log<sub>10</sub>"}
-      </button>
-      <AddDigitButton dispatch={dispatch} digit="4" />
-      <AddDigitButton dispatch={dispatch} digit="5" />
-      <AddDigitButton dispatch={dispatch} digit="6" />
-      <AddOperationButton
+
+      {shifted ? (
+        <LogKey
+          dispatch={dispatch}
+          action={ACTIONS.NOT_IMPLEMENTED}
+          base={TextConstants.VARIABLE_Y}
+        />
+      ) : (
+        <button>{TextConstants.NATURAL_LOGARITHM}</button>
+      )}
+
+      {shifted ? (
+        <LogKey
+          dispatch={dispatch}
+          action={ACTIONS.PERFORM_BASE_LOGARITHM}
+          base={TextConstants.NUMBER_TWO}
+        />
+      ) : (
+        <LogKey
+          dispatch={dispatch}
+          action={ACTIONS.PERFORM_BASE_LOGARITHM}
+          base={TextConstants.NUMBER_TEN}
+        />
+      )}
+
+      <DigitKey dispatch={dispatch} digit={TextConstants.NUMBER_KEY_FOUR} />
+      <DigitKey dispatch={dispatch} digit={TextConstants.NUMBER_KEY_FIVE} />
+      <DigitKey dispatch={dispatch} digit={TextConstants.NUMBER_KEY_SIX} />
+      <OperatorKey
+        statusOfKey={subtractionIsSelected}
         dispatch={dispatch}
-        operator={ElementTextConstants.SUBTRACTION_SIGN}
+        operator={TextConstants.SUBTRACTION_SIGN}
       />
       <button
         onClick={() =>
           dispatch({ type: ACTIONS.GET_FACTORIAL_FOR_GIVEN_VALUE })
         }
       >
-        x!
+        {TextConstants.FACTORIAL_KEY}
       </button>
-      <button>
-        {shifted
-          ? ElementTextConstants.INVERSE_SINE
-          : ElementTextConstants.SINE}
-      </button>
-      <button>
-        {shifted
-          ? ElementTextConstants.INVERSE_COSINE
-          : ElementTextConstants.COSINE}
-      </button>
-      <button>
-        {shifted
-          ? ElementTextConstants.INVERSE_TANGENT
-          : ElementTextConstants.TANGENT}
-      </button>
-      <AddDigitButton dispatch={dispatch} digit="e" />
-      <AddDigitButton dispatch={dispatch} digit="EE" />
-      <AddDigitButton dispatch={dispatch} digit="1" />
-      <AddDigitButton dispatch={dispatch} digit="2" />
-      <AddDigitButton dispatch={dispatch} digit="3" />
-      <AddOperationButton
+      <InverseKey
         dispatch={dispatch}
-        operator={ElementTextConstants.ADDITION_SIGN}
+        shifted={shifted}
+        text={TextConstants.SINE}
+      />
+      <InverseKey
+        dispatch={dispatch}
+        shifted={shifted}
+        text={TextConstants.COSINE}
+      />
+      <InverseKey
+        dispatch={dispatch}
+        shifted={shifted}
+        text={TextConstants.TANGENT}
+      />
+      <DigitKey dispatch={dispatch} digit={TextConstants.EULERS_NUMBER} />
+      <button
+        onClick={() => dispatch({ type: ACTIONS.ENTER_EXPONENTIAL_NOTATION })}
+      >
+        EE
+      </button>
+      <DigitKey dispatch={dispatch} digit={TextConstants.NUMBER_KEY_ONE} />
+      <DigitKey dispatch={dispatch} digit={TextConstants.NUMBER_KEY_TWO} />
+      <DigitKey dispatch={dispatch} digit={TextConstants.NUMBER_KEY_THREE} />
+      <OperatorKey
+        statusOfKey={additionIsSelected}
+        dispatch={dispatch}
+        operator={TextConstants.ADDITION_SIGN}
       />
       <button>Rad</button>
-      <button>
-        {shifted
-          ? ElementTextConstants.INVERSE_HYPERBOLIC_SINE
-          : ElementTextConstants.HYPERBOLIC_SINE}
-      </button>
-      <button>
-        {shifted
-          ? ElementTextConstants.INVERSE_HYPERBOLIC_COSINE
-          : ElementTextConstants.HYPERBOLIC_COSINE}
-      </button>
-      <button>
-        {shifted
-          ? ElementTextConstants.INVERSE_HYPERBOLIC_TANGENT
-          : ElementTextConstants.HYPERBOLIC_TANGENT}
-      </button>
-      <AddDigitButton dispatch={dispatch} digit="π" />
-      <AddDigitButton dispatch={dispatch} digit="Rand" />
-      <AddDigitButton
+      <InverseKey
+        dispatch={dispatch}
+        shifted={shifted}
+        text={TextConstants.HYPERBOLIC_SINE}
+      />
+      <InverseKey
+        dispatch={dispatch}
+        shifted={shifted}
+        text={TextConstants.HYPERBOLIC_COSINE}
+      />
+      <InverseKey
+        dispatch={dispatch}
+        shifted={shifted}
+        text={TextConstants.HYPERBOLIC_TANGENT}
+      />
+      <DigitKey dispatch={dispatch} digit={TextConstants.PI} />
+      <DigitKey dispatch={dispatch} digit={TextConstants.RANDOM} />
+      <DigitKey
         elementHasClass="span-two"
         dispatch={dispatch}
-        digit="0"
+        digit={TextConstants.NUMBER_KEY_ZERO}
       />
-      <AddDigitButton dispatch={dispatch} digit="." />
+      <button onClick={() => dispatch({ type: ACTIONS.ADD_DECIMAL_POINT })}>
+        {TextConstants.DECIMAL_POINT}
+      </button>
       <button
         className="operators"
         onClick={() => dispatch({ type: ACTIONS.CALCULATE })}
       >
-        {ElementTextConstants.EQUALS_SIGN}
+        {TextConstants.EQUALS_SIGN}
       </button>
     </div>
   );

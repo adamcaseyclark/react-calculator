@@ -1,7 +1,7 @@
 import { LocatorConstants } from "../../../../constants/locators";
-import { MessageConstants } from "../../../../constants/messages";
+import { OperationConstants } from "../../../../constants/operations";
 
-describe("Addition Operator Behavior - Will Yield Zero With No Previous Entry", () => {
+describe("Addition Operator Behavior - When Key Is Selected", () => {
   beforeEach(() => {
     cy.visit("http://localhost:3000/");
     cy.reload();
@@ -13,29 +13,35 @@ describe("Addition Operator Behavior - Will Yield Zero With No Previous Entry", 
     });
   });
 
-  it("No Previous Value Entered Will Yield 0 When Added And Equals", () => {
-    cy.get(LocatorConstants.DISPLAYED_VALUE).then(
-      ($displayWhenNoDataEntered) => {
-        cy.wrap($displayWhenNoDataEntered).should("have.text", "0");
+  it("Addition Key Will Change Outline When Selected", () => {
+    cy.get(LocatorConstants.ADDITION_KEY).then(
+      ($shiftKeyAfterKeyHasBeenSelected) => {
+        cy.wrap($shiftKeyAfterKeyHasBeenSelected).should(
+          "have.text",
+          OperationConstants.ADDITION
+        );
+        cy.get(LocatorConstants.ADDITION_KEY_NOT_SELECTED).should("exist");
 
         cy.get(LocatorConstants.ADDITION_KEY).click();
-        cy.get(LocatorConstants.EQUALS_KEY).click();
-
-        cy.get(LocatorConstants.DISPLAYED_VALUE).then(
-          ($displayAfterSelectingAddAndEquals) => {
-            cy.wrap($displayAfterSelectingAddAndEquals).should(
+        cy.get(LocatorConstants.ADDITION_KEY).then(
+          ($shiftKeyAfterKeyHasBeenSelected) => {
+            cy.wrap($shiftKeyAfterKeyHasBeenSelected).should(
               "have.text",
-              "0"
+              OperationConstants.ADDITION
             );
+            cy.get(LocatorConstants.ADDITION_KEY_WHEN_SELECTED).should("exist");
 
-            cy.wrap($displayAfterSelectingAddAndEquals).should(
-              "not.have.text",
-              MessageConstants.NOT_A_NUMBER
-            );
-
-            cy.wrap($displayAfterSelectingAddAndEquals).should(
-              "not.have.text",
-              "NaN"
+            cy.get(LocatorConstants.SUBTRACTION_KEY).click();
+            cy.get(LocatorConstants.ADDITION_KEY).then(
+              ($shiftKeyAfterKeyHasBeenSelected) => {
+                cy.wrap($shiftKeyAfterKeyHasBeenSelected).should(
+                  "have.text",
+                  OperationConstants.ADDITION
+                );
+                cy.get(LocatorConstants.ADDITION_KEY_NOT_SELECTED).should(
+                  "exist"
+                );
+              }
             );
           }
         );
