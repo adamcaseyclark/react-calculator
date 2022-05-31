@@ -1,0 +1,10 @@
+{
+  "baseUrl": "http://localhost:3000/",
+  "watchForFileChanges": false,
+  "screenshotOnRunFailure": false,
+  "video": false,
+  "env": {
+    "TESTING_IN_DEBUG_MODE": true,
+    "KNOWN_BUG_CLEARING_DATA_ONLY_HAPPENING_IN_CYPRESS": true
+  }
+}

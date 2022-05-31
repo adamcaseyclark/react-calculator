@@ -1,12 +1,66 @@
-# Getting Started with Create React App
+# Scientific Calculator Application With CI/CD UI Testing Framework
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![image info](code/public/react-calculator.png)
 
-## Available Scripts
+the goal of this is to demo ci/cd system that runs ui and unit tests on each push of code to the remote repository - preventing any code that fails tests from entering the remote branch
 
-In the project directory, you can run:
+- calculator is modeled to work identically to macOS/iOS calculator application.
+- 340+ UI Tests written to verify every aspect of calculator expected behavior:
+
+  - order of operations
+  - trigonometric functions (hyperbolic and inverse functions)
+  - exponents
+  - memory capability
+  - percentages
+  - fixed numbers
+  - keyboard shortcuts
+
+- running tests multiple different ways: headed, headedlessly, and in one or more docker containers.
+- to goal is to demonstrate spinning up multiple docker containers to run tests in parallel.
+- a failure will stop code from being pushed to the remote branch.
+- method of purposely failing tests built in to verify this.
+
+## Running App
+
+application must be running to run tests outside of a docker container
 
 ### `npm start`
+
+## Running UI Tests With Browser
+
+To view tests as they run sequentially
+
+### `npm run test`
+
+## Running UI Tests Headlessly
+
+To view tests as they run sequentially
+
+### `npm run test`
+
+## Debugging Mode
+
+### `DEBUGGING_MODE = true`
+
+This will render a display showing the important state variables in calculator's display.
+
+The previously saved number, the operator selected and the last key selected and whether the chosen key is part two part calculation
+
+Displayed as: `previous="" operator="" lastKey="" calculationInProgress="" audit=""`
+
+## How To Purposely Fail Tests
+
+Purposely Failing UI Tests In Order To Check Failing Behavior That Code Will Not be pushed to the remote repository
+
+### `PURPOSELY_FAIL_MODE = true`
+
+This is bypass a formatting function in the code that will cause multiple tests to fail.
+
+This is to verify that code will not be pushed to the remote repository
+
+### `npm run test:failing`
+
+---
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
@@ -14,57 +68,4 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

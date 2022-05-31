@@ -1,0 +1,54 @@
+{
+  "name": "react-calculator",
+  "version": "0.1.0",
+  "private": true,
+  "author": "adam casey clark",
+  "scripts": {
+    "start": "react-scripts start",
+    "unit:test": "jest src/helpers/test/**",
+    "test": "cypress run -s \"cypress/integration/**\"",
+    "open": "cypress open",
+    "lint": "eslint --ext .jsx,.js ./src ./cypress",
+    "lint:fix": "eslint --fix --ext .jsx,.js ./src ./cypress",
+    "prettier": "prettier --write ./src ./cypress"
+  },
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.1.1",
+    "@testing-library/user-event": "^13.5.0",
+    "cypress": "^9.7.0",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+    "react-rnd": "^10.3.7",
+    "react-scripts": "5.0.1",
+    "use-keyboard-shortcut": "^1.1.4",
+    "web-vitals": "^2.1.4"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.17.10",
+    "@babel/eslint-parser": "^7.17.0",
+    "@babel/preset-env": "^7.17.10",
+    "babel-jest": "^28.1.0",
+    "eslint": "^8.14.0",
+    "eslint-plugin-cypress": "^2.12.1",
+    "prettier": "^2.6.2"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
