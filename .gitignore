@@ -8,10 +8,11 @@
 # testing
 /coverage
 
-# cypress
+# cypress (internal file)
 /cypress/videos
 /cypress/screenshots
 /cypress/downloads
+/cypress/future.txt
 
 # production
 /build
@@ -29,9 +30,6 @@ yarn-error.log*
 # Logs
 logs
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 lerna-debug.log*
 .pnpm-debug.log*
 

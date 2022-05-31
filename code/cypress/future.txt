@@ -1,0 +1,12 @@
+
+
+Future Tests
+------------------------------
+Toggling Basic To Scientific Does Not Affect Display
+    - Digits
+    - Notation
+    - In Progress Calculation
+
+
+What is default Layout? Scientific
+

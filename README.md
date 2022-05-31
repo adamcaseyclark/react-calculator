@@ -1,4 +1,4 @@
-# Scientific Calculator Application With CI/CD UI Testing Framework
+# Scientific Calculator CI/CD UI Testing Framework
 
 ![image info](code/public/react-calculator.png)
 
