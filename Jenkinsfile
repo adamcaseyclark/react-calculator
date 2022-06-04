@@ -1,8 +1,8 @@
 #!groovy​
 
-GIT_HASH=""
-GIT_DATE=""
-ENV=""
+// GIT_HASH=""
+// GIT_DATE=""
+// ENV=""
 
 pipeline {
     agent any
@@ -26,11 +26,11 @@ pipeline {
                     ]
                 ])
 
-                ENV = sh(script: 'printenv', returnStdout: true)
-//                 GIT_HASH = sh(script: 'git rev-parse HEAD',returnStdout: true).trim()
-//                 BUILD_DATE = sh(script: 'date -u',returnStdout: true).trim()
+                env.ENV = sh(script: 'printenv', returnStdout: true)
+//                 env.GIT_HASH = sh(script: 'git rev-parse HEAD',returnStdout: true).trim()
+//                 env.BUILD_DATE = sh(script: 'date -u',returnStdout: true).trim()
 
-                sh "echo ENV is: ${ENV}"
+                sh "echo ENV is: ${env.ENV}"
 //                 sh "echo GIT_HASH is: ${GIT_HASH}"
 //                 sh "echo BUILD_DATE is: ${BUILD_DATE}"
 //                 sh "echo BRANCH_NAME is: ${BRANCH_NAME}"
