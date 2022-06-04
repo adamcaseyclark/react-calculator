@@ -1,5 +1,7 @@
 #!groovy​
 
+GIT_HASH=""
+
 pipeline {
     agent any
     stages {
