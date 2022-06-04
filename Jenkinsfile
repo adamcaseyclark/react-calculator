@@ -2,6 +2,7 @@
 
 GIT_HASH=""
 GIT_DATE=""
+ENV=""
 
 pipeline {
     agent any
@@ -25,13 +26,15 @@ pipeline {
                     ]
                 ])
 
-                GIT_HASH = sh(script: 'git rev-parse HEAD',returnStdout: true).trim()
-                BUILD_DATE = sh(script: 'date -u',returnStdout: true).trim()
+                ENV = sh(script: 'printenv', returnStdout: true)
+//                 GIT_HASH = sh(script: 'git rev-parse HEAD',returnStdout: true).trim()
+//                 BUILD_DATE = sh(script: 'date -u',returnStdout: true).trim()
 
-                sh "echo GIT_HASH is: ${GIT_HASH}"
-                sh "echo BUILD_DATE is: ${BUILD_DATE}"
-                sh "echo BRANCH_NAME is: ${BRANCH_NAME}"
-                sh "echo BUILD_NUMBER is: ${BUILD_NUMBER}"
+                sh "echo ENV is: ${ENV}"
+//                 sh "echo GIT_HASH is: ${GIT_HASH}"
+//                 sh "echo BUILD_DATE is: ${BUILD_DATE}"
+//                 sh "echo BRANCH_NAME is: ${BRANCH_NAME}"
+//                 sh "echo BUILD_NUMBER is: ${BUILD_NUMBER}"
 
                 postBuildStatusToGithub("pending", "The build is pending!");
             }
