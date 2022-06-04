@@ -1,7 +1,8 @@
 #!groovy​
 
-node('jenkins-worker') {
-    try {
+pipeline {
+    agent any
+    stages {
         stage('Git') {
             checkout([
                 $class: 'GitSCM',
@@ -25,16 +26,11 @@ node('jenkins-worker') {
 
             sh "echo GIT_HASH is: ${GIT_HASH}"
             sh "echo BUILD_DATE is: ${BUILD_DATE}"
-            sh "echo PROJECT_NAME is: ${PROJECT_NAME}"
-            sh "echo PROJECT_REGISTRY_URI is: ${PROJECT_REGISTRY_URI}"
             sh "echo BRANCH_NAME is: ${BRANCH_NAME}"
             sh "echo BUILD_NUMBER is: ${BUILD_NUMBER}"
 
             postBuildStatusToGithub("pending", "The build is pending!");
         }
-    }
-    catch (error) {
-        throw error
     }
 }
 
