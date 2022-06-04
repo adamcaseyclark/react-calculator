@@ -1,6 +1,7 @@
 #!groovy​
 
 GIT_HASH=""
+GIT_DATE=""
 
 pipeline {
     agent any
