@@ -5,36 +5,33 @@
 // ENV=""
 
 pipeline {
-    environment {
-        FNAME = "Naive"
-        LNAME= "Skill"
-    }
     agent any
     stages {
         stage('Git') {
             steps {
-                checkout([
-                    $class: 'GitSCM',
-                    branches: [
-                        [
-                            name: "${env.BRANCH_NAME}"
-                        ]
-                    ],
-                    doGenerateSubmoduleConfigurations: false,
-                    extensions: [],
-                    submoduleCfg: [],
-                    userRemoteConfigs: [
-                        [
-                            url: 'git@github.com:adamcaseyclark/react-calculator.git'
-                        ]
-                    ]
-                ])
+//                 checkout([
+//                     $class: 'GitSCM',
+//                     branches: [
+//                         [
+//                             name: "${env.BRANCH_NAME}"
+//                         ]
+//                     ],
+//                     doGenerateSubmoduleConfigurations: false,
+//                     extensions: [],
+//                     submoduleCfg: [],
+//                     userRemoteConfigs: [
+//                         [
+//                             url: 'git@github.com:adamcaseyclark/react-calculator.git'
+//                         ]
+//                     ]
+//                 ])
 
                 sh 'printenv'
 //                 env.ENV = sh(script: 'printenv', returnStdout: true)
 //                 env.GIT_HASH = sh(script: 'git rev-parse HEAD',returnStdout: true).trim()
 //                 env.BUILD_DATE = sh(script: 'date -u',returnStdout: true).trim()
 
+                sh "echo env.BRANCH_NAME is: ${env.BRANCH_NAME}"
 //                 sh "echo ENV is: ${env.ENV}"
 //                 sh "echo GIT_HASH is: ${GIT_HASH}"
 //                 sh "echo BUILD_DATE is: ${BUILD_DATE}"
