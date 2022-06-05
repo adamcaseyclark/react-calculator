@@ -1,11 +1,13 @@
 #!groovy​
 
 // PROJECT_REGISTRY_URI="491185294446.dkr.ecr.us-east-1.amazonaws.com"
+CREDENTIALS_ID="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"
+EXPOSED_URL="https://f4e8-2607-fb90-9b91-486c-bd3c-79b0-46fe-ff0b.ngrok.io"
 PROJECT_NAME="react-calculator"
-// GIT_HASH=""
+GIT_HASH=""
 // TERRAFORM_BIN_PATH="/opt/tempus/terraform/0.11.0/"
 // TEAM_SLACK_CHANNEL="q"
-// BUILD_URL="https://leeroy.securetempus.com/view/Q/job/ENG-Workbench/job/${env.BRANCH_NAME}/"
+BUILD_URL="https://leeroy.securetempus.com/view/Q/job/ENG-Workbench/job/${env.BRANCH_NAME}/"
 
 pipeline {
     agent any
@@ -38,7 +40,7 @@ pipeline {
 //                 BUILD_DATE = sh(script: 'date -u',returnStdout: true).trim()
 
                 sh "echo GIT_HASH is: ${GIT_COMMIT}"
-                sh "echo BUILD_DATE is: ${BUILD_DATE}"
+//                 sh "echo BUILD_DATE is: ${BUILD_DATE}"
                 sh "echo PROJECT_NAME is: ${PROJECT_NAME}"
 //                 sh "echo PROJECT_REGISTRY_URI is: ${PROJECT_REGISTRY_URI}"
                 sh "echo BRANCH_NAME is: ${GIT_BRANCH}"
@@ -51,15 +53,13 @@ pipeline {
 }
 
 def postBuildStatusToGithub(state, description) {
-    withCredentials([string(credentialsId: 'tempuslabs-devops', variable: 'TOKEN')]) {
-        sh """
-            curl -XPOST -H \"Authorization: token ${TOKEN}\" https://api.github.com/repos/tempuslabs/q-workbench/statuses/${GIT_HASH} -d \"{
-            \\\"state\\\": \\\"${state}\\\",
-            \\\"target_url\\\": \\\"${BUILD_URL}\\\",
-            \\\"description\\\": \\\"${description}\\\"
-            }\"
-        """
-    }
+    sh """
+        curl -XPOST -H \"Authorization: token ${CREDENTIALS_ID}\" https://api.github.com/repos/adamcaseyclark/react-calculator/statuses/${GIT_HASH} -d \"{
+        \\\"state\\\": \\\"${state}\\\",
+        \\\"target_url\\\": \\\"${BUILD_URL}\\\",
+        \\\"description\\\": \\\"${description}\\\"
+        }\"
+    """
 }
 
 def getPreviousSuccess(build) {
