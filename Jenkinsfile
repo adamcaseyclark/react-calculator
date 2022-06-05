@@ -1,13 +1,11 @@
 #!groovy​
 
-// PROJECT_REGISTRY_URI="491185294446.dkr.ecr.us-east-1.amazonaws.com"
-CREDENTIALS_ID="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"
-EXPOSED_URL="https://f4e8-2607-fb90-9b91-486c-bd3c-79b0-46fe-ff0b.ngrok.io"
+// ADD CREDENTIALS_ID, EXPOSED_URL WHEN RUNNING
+CREDENTIALS_ID=""
+EXPOSED_URL=""
 PROJECT_NAME="react-calculator"
 GIT_HASH=""
 BRANCH_NAME=""
-// TERRAFORM_BIN_PATH="/opt/tempus/terraform/0.11.0/"
-// TEAM_SLACK_CHANNEL="q"
 BUILD_URL="${EXPOSED_URL}/job/${PROJECT_NAME}/${BRANCH_NAME}/"
 
 pipeline {
@@ -55,7 +53,7 @@ pipeline {
 
 def postBuildStatusToGithub(state, description) {
     sh """
-        curl -XPOST -H \"Authorization: token ${CREDENTIALS_ID}\" https://api.github.com/repos/adamcaseyclark/react-calculator/statuses/${GIT_COMMIT} -d \"{
+        curl -XPOST -H \"Authorization: ${CREDENTIALS_ID}\" https://api.github.com/repos/adamcaseyclark/react-calculator/statuses/${GIT_COMMIT} -d \"{
         \\\"state\\\": \\\"${state}\\\",
         \\\"target_url\\\": \\\"${BUILD_URL}\\\",
         \\\"description\\\": \\\"${description}\\\"
