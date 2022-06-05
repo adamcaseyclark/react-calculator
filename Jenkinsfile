@@ -7,7 +7,7 @@ PROJECT_NAME="react-calculator"
 GIT_HASH=""
 // TERRAFORM_BIN_PATH="/opt/tempus/terraform/0.11.0/"
 // TEAM_SLACK_CHANNEL="q"
-BUILD_URL="https://leeroy.securetempus.com/view/Q/job/ENG-Workbench/job/${env.BRANCH_NAME}/"
+BUILD_URL="${EXPOSED_URL}/view/Q/job/ENG-Workbench/job/${env.BRANCH_NAME}/"
 
 pipeline {
     agent any
@@ -54,9 +54,9 @@ pipeline {
 
 def postBuildStatusToGithub(state, description) {
     sh """
-        curl -XPOST -H \"Authorization: token ${CREDENTIALS_ID}\" https://api.github.com/repos/adamcaseyclark/react-calculator/statuses/${GIT_HASH} -d \"{
+        curl -XPOST -H \"Authorization: token ${CREDENTIALS_ID}\" https://api.github.com/repos/adamcaseyclark/react-calculator/statuses/${GIT_COMMIT} -d \"{
         \\\"state\\\": \\\"${state}\\\",
-        \\\"target_url\\\": \\\"${BUILD_URL}\\\",
+        \\\"target_url\\\": \\\""${EXPOSED_URL}/adamcaseyclark/job/${BRANCH_NAME}/"\\\",
         \\\"description\\\": \\\"${description}\\\"
         }\"
     """
