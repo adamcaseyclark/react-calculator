@@ -44,9 +44,9 @@ To view tests as they run sequentially
 
 This will render a display showing the important state variables in calculator's display.
 
-The previously saved number, the operator selected and the last key selected and whether the chosen key is part two part calculation
+The previously saved number, the operator selected and the last key selected and whether the chosen key is part two part calculation, audit saves order of operations calculation, shortcutKeys will display last short cut key typed.
 
-Displayed as: `previous="" operator="" lastKey="" calculationInProgress="" audit=""`
+Displayed as: `previous="" operator="" lastKey="" calculationInProgress="" audit="" shortcutKeys=""`
 
 ## How To Purposely Fail Tests
 
