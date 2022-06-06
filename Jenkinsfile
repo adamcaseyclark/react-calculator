@@ -57,8 +57,8 @@ pipeline {
             }
         }
 
-        stage('UI Test') {
-            steps {
+//         stage('UI Test') {
+//             steps {
 // //                 BUILD_PREFIX = "${PROJECT_NAME}-${GIT_COMMIT}"
 //
 //                 sh "echo ${docker ps}"
@@ -109,8 +109,8 @@ pipeline {
 // //                     parallel parallelStagesMap
 // //                 }
 // //                 postBuildStatusToGithub("success", "The build has passed!");
-            }
-        }
+//             }
+//         }
     }
 }
 
