@@ -8,7 +8,6 @@ pipeline {
     agent any
     environment {
         BUILD_DATE = sh(script: 'date -u',returnStdout: true).trim()
-        BUILD_URL = sh(script: 'env.BUILD_URL',returnStdout: true).trim()
     }
     stages {
         stage('Git') {
@@ -36,7 +35,7 @@ pipeline {
                 sh "echo PROJECT_NAME is: ${PROJECT_NAME}"
 //                 sh "echo PROJECT_REGISTRY_URI is: ${PROJECT_REGISTRY_URI}"
                 sh "echo BRANCH_NAME is: ${BRANCH_NAME}"
-                sh "echo BUILD_NUMBER is: ${BUILD_NUMBER}"
+                sh "echo BUILD_NUMBER is: ${env.BUILD_NUMBER}"
 
                 postBuildStatusToGithub("pending", "The build is pending!");
             }
@@ -49,7 +48,7 @@ def postBuildStatusToGithub(state, description) {
         sh """
             curl -XPOST -H \"Authorization: token ${TOKEN}\" https://api.github.com/repos/adamcaseyclark/react-calculator/statuses/${GIT_COMMIT} -d \"{
             \\\"state\\\": \\\"${state}\\\",
-            \\\"target_url\\\": \\\"${BUILD_URL}\\\",
+            \\\"target_url\\\": \\\"${env.BUILD_URL}\\\",
             \\\"description\\\": \\\"${description}\\\"
             }\"
         """
