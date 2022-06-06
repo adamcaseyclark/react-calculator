@@ -110,11 +110,11 @@ pipeline {
                         postBuildStatusToGithub("failure", "The build has failed!");
                         throw error
                     }
-                }
             }
         }
     }
 }
+
 
 def postBuildStatusToGithub(state, description) {
     withCredentials([string(credentialsId: 'react-calculator-token', variable: 'TOKEN')]) {
