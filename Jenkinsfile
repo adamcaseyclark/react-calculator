@@ -60,84 +60,59 @@ pipeline {
             }
         }
 
-        try {
-            stage('UI Test') {
-                steps {
-                    try {
-                        BUILD_PREFIX = "${PROJECT_NAME}-${GIT_COMMIT}"
+        stage('UI Test') {
+            steps {
+                try {
+                    BUILD_PREFIX = "${PROJECT_NAME}-${GIT_COMMIT}"
 
-                        // sh """
-                            // docker-compose -f docker/cypress-test.yml -p ${BUILD_PREFIX} up -d
-                        // """
+                    // sh """
+                        // docker-compose -f docker/cypress-test.yml -p ${BUILD_PREFIX} up -d
+                    // """
 
-                        PROJECT_BUILD_NAME = "${PROJECT_NAME}-${BUILD_NUMBER}"
+                    PROJECT_BUILD_NAME = "${PROJECT_NAME}-${BUILD_NUMBER}"
 
-                        // build cypress container
-                        sh """
-                        docker build -f docker/CypressDockerfile -t ${PROJECT_BUILD_NAME}-cypress:${GIT_COMMIT} \
-                            --build-arg PROJECT_NAME=${PROJECT_NAME} \
-                            --build-arg GIT_HASH=${GIT_COMMIT} \
-                            --force-rm=true \
-                            --no-cache=true \
-                            .
-                        """
+                    // build cypress container
+                    sh """
+                    docker build -f docker/CypressDockerfile -t ${PROJECT_BUILD_NAME}-cypress:${GIT_COMMIT} \
+                        --build-arg PROJECT_NAME=${PROJECT_NAME} \
+                        --build-arg GIT_HASH=${GIT_COMMIT} \
+                        --force-rm=true \
+                        --no-cache=true \
+                        .
+                    """
 
-                        // run cypress tests in parallel
-                        sh 'cd code && find ./cypress/integration/ -name "*.spec.js" > ../listOfFiles'
-                        def testFiles = readFile("listOfFiles").split().toList();
-                        sh 'rm listOfFiles'
-                        def testFileSplitCount = testFiles.size().intdiv(5) + 1;
-                        def testFilesArray = testFiles.collate(testFileSplitCount);
-                        def parallelStagesMap = testFilesArray.collectEntries {
-                            ["UI Test ${testFilesArray.indexOf(it)}" : {
-                                node("${env.NODE_NAME}") {
-                                    timeout(time: 5, activity: true, unit: 'MINUTES') {
-                                        sh """
-                                            docker run --network=${BUILD_PREFIX}-cypressnet \
-                                                --env CYPRESS_RUNNING_IN_DOCKER=true \
-                                                --name ${PROJECT_BUILD_NAME}-cypress-${testFilesArray.indexOf(it)} \
-                                                ${PROJECT_BUILD_NAME}-cypress:${GIT_COMMIT} run --spec '${it.join(',')}'
-                                        """
-                                    }
+                    // run cypress tests in parallel
+                    sh 'cd code && find ./cypress/integration/ -name "*.spec.js" > ../listOfFiles'
+                    def testFiles = readFile("listOfFiles").split().toList();
+                    sh 'rm listOfFiles'
+                    def testFileSplitCount = testFiles.size().intdiv(5) + 1;
+                    def testFilesArray = testFiles.collate(testFileSplitCount);
+                    def parallelStagesMap = testFilesArray.collectEntries {
+                        ["UI Test ${testFilesArray.indexOf(it)}" : {
+                            node("${env.NODE_NAME}") {
+                                timeout(time: 5, activity: true, unit: 'MINUTES') {
+                                    sh """
+                                        docker run --network=${BUILD_PREFIX}-cypressnet \
+                                            --env CYPRESS_RUNNING_IN_DOCKER=true \
+                                            --name ${PROJECT_BUILD_NAME}-cypress-${testFilesArray.indexOf(it)} \
+                                            ${PROJECT_BUILD_NAME}-cypress:${GIT_COMMIT} run --spec '${it.join(',')}'
+                                    """
                                 }
-                            }]
-                        }
-                            script {
-                                parallel parallelStagesMap
                             }
-                            postBuildStatusToGithub("success", "The build has passed!");
+                        }]
+                    }
+                        script {
+                            parallel parallelStagesMap
                         }
-                        catch (error) {
-                            postBuildStatusToGithub("failure", "The build has failed!");
-                            throw error
-                        }
-//                                 finally {
-//                                     0.upto(4, {
-//                                         sh "docker rm --force ${PROJECT_BUILD_NAME}-cypress-${it}"
-//                                     })
-//                                     withCredentials([
-//                                         [
-//                                             $class: 'AmazonWebServicesCredentialsBinding',
-//                                             credentialsId: 'devops-jenkins'
-//                                         ]
-//                                     ]) {
-//                                         sh """
-//                                         WORKFLOWS_HASH=${lastSuccessfulWorkflowsHash} WORKFLOWS_PORT=${workflowsPort} \
-//                                             WORKBENCH_HASH=${GIT_HASH} WORKBENCH_PORT=${workbenchPort} \
-//                                             ATTACHMENTS_HASH=${lastSuccessfulAttachmentsHash} ATTACHMENTS_PORT=${attachmentsPort} \
-//                                             docker-compose -f docker/cypress-test.yml -p ${PROJECT_NAME}:${GIT_HASH} down -v
-//                                         """
-//                                     }
-//                                     sh "docker rmi ${PROJECT_BUILD_NAME}-cypress:${GIT_HASH}"
-//                                 }
-                            }
-                        }
+                        postBuildStatusToGithub("success", "The build has passed!");
+                    }
+                    catch (error) {
+                        postBuildStatusToGithub("failure", "The build has failed!");
+                        throw error
                     }
                 }
-//                 catch (error) {
-//                     // throw error // non-blocking but should still show a failed stage
-//                 }
-
+            }
+        }
     }
 }
 
