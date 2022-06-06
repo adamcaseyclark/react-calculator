@@ -31,7 +31,7 @@ pipeline {
 
                 sh "ls -ltr"
                 sh "git rev-parse HEAD"
-                sh "GIT_COMMIT"
+                sh "echo GIT_COMMIT is ${GIT_COMMIT}"
                 sh "date -u"
 
 //                 GIT_HASH = sh(script: 'git rev-parse HEAD',returnStdout: true).trim()
