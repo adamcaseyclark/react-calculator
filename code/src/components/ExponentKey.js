@@ -7,6 +7,7 @@ export function ExponentKey({
   digit,
   text,
   exponent,
+  superscript,
 }) {
   return (
     <button
@@ -19,7 +20,7 @@ export function ExponentKey({
       }
     >
       {text}
-      <sup>{exponent}</sup>
+      {superscript ? superscript : <sup>{exponent}</sup>}
     </button>
   );
 }

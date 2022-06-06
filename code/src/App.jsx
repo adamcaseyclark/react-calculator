@@ -1562,7 +1562,8 @@ function App() {
           className={shifted ? "selected" : ""}
           onClick={() => dispatch({ type: ACTIONS.PERFORM_SHIFT })}
         >
-          2nd
+          {TextConstants.NUMBER_TWO}
+          {TextConstants.ND_SUPERSCRIPT}
         </button>
 
         <ExponentKey
@@ -1570,7 +1571,7 @@ function App() {
           action={ACTIONS.RAISED_TO_THE_POWER}
           digit={TextConstants.X_SQUARED}
           text={TextConstants.VARIABLE_X}
-          exponent={TextConstants.NUMBER_TWO}
+          superscript={TextConstants.TWO_SUPERSCRIPT}
         />
 
         <ExponentKey
@@ -1578,7 +1579,7 @@ function App() {
           action={ACTIONS.RAISED_TO_THE_POWER}
           digit={TextConstants.X_CUBED}
           text={TextConstants.VARIABLE_X}
-          exponent={TextConstants.NUMBER_THREE}
+          superscript={TextConstants.THREE_SUPERSCRIPT}
         />
 
         <ExponentKey
@@ -1653,20 +1654,20 @@ function App() {
           dispatch={dispatch}
           action={ACTIONS.REMOVE_THE_RADICAL}
           digit={TextConstants.SECOND_ROOT_OF_X}
-          index={TextConstants.NUMBER_TWO}
+          index={TextConstants.TWO_SUPERSCRIPT}
         />
         <RadicalKey
           dispatch={dispatch}
           action={ACTIONS.REMOVE_THE_RADICAL}
           digit={TextConstants.THIRD_ROOT_OF_X}
-          index={TextConstants.NUMBER_THREE}
+          index={TextConstants.THREE_SUPERSCRIPT}
         />
         <RadicalKey
           statusOfKey={calculationInProgress === TextConstants.Y_ROOT_OF_X}
           dispatch={dispatch}
           action={ACTIONS.REMOVE_THE_RADICAL}
           digit={TextConstants.Y_ROOT_OF_X}
-          index={TextConstants.VARIABLE_Y}
+          index={TextConstants.Y_SUPERSCRIPT}
         />
 
         {shifted ? (
@@ -1684,13 +1685,13 @@ function App() {
           <LogKey
             dispatch={dispatch}
             digit={TextConstants.BASE_TWO_LOGARITHM}
-            base={TextConstants.NUMBER_TWO}
+            base={TextConstants.TWO_SUBSCRIPT}
           />
         ) : (
           <LogKey
             dispatch={dispatch}
             digit={TextConstants.BASE_TEN_LOGARITHM}
-            base={TextConstants.NUMBER_TEN}
+            base={TextConstants.TEN_SUBSCRIPT}
           />
         )}
 
