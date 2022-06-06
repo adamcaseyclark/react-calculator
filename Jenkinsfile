@@ -61,9 +61,11 @@ pipeline {
             steps {
 //                 BUILD_PREFIX = "${PROJECT_NAME}-${GIT_COMMIT}"
 
-                // sh """
-                    // docker-compose -f docker/cypress-test.yml -p ${BUILD_PREFIX} up -d
-                // """
+                sh "docker ps"
+
+                sh """
+                    docker-compose -f docker/cypress-test.yml -p ${BUILD_PREFIX} up -d
+                """
 
 //                 PROJECT_BUILD_NAME = "${PROJECT_NAME}-${BUILD_NUMBER}"
 
