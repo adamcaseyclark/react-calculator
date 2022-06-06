@@ -3,11 +3,15 @@
 PROJECT_NAME="react-calculator"
 GIT_HASH=""
 BRANCH_NAME="master"
-BUILD_DATE=""
+// BUILD_DATE=""
 // BUILD_URL="${EXPOSED_URL}/job/${PROJECT_NAME}/${BRANCH_NAME}/"
 
 pipeline {
     agent any
+    environment {
+//         BUILD_DATE = sh 'date u'
+        BUILD_DATE = sh(script: 'date -u',returnStdout: true).trim()
+    }
     stages {
         stage('Git') {
             steps {
@@ -29,16 +33,16 @@ pipeline {
                     ]
                 ])
 
-                sh "ls -ltr"
-                sh "git rev-parse HEAD"
-                sh "echo GIT_COMMIT is ${GIT_COMMIT}"
-                sh "date -u"
-                sh "echo env.BUILD_URL is ${env.BUILD_URL}"
-
-//                 GIT_HASH = sh(script: 'git rev-parse HEAD',returnStdout: true).trim()
-//                 BUILD_DATE = sh(script: 'date -u',returnStdout: true).trim()
-
-                sh "echo ${env}"
+//                 sh "ls -ltr"
+//                 sh "git rev-parse HEAD"
+//                 sh "echo GIT_COMMIT is ${GIT_COMMIT}"
+//                 sh "date -u"
+//                 sh "echo env.BUILD_URL is ${env.BUILD_URL}"
+//
+// //                 GIT_HASH = sh(script: 'git rev-parse HEAD',returnStdout: true).trim()
+// //                 BUILD_DATE = sh(script: 'date -u',returnStdout: true).trim()
+//
+//                 sh "echo ${env}"
 
                 sh "echo GIT_HASH is: ${GIT_COMMIT}"
                 sh "echo BUILD_DATE is: ${BUILD_DATE}"
