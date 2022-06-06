@@ -44,7 +44,7 @@ pipeline {
 }
 
 def postBuildStatusToGithub(state, description) {
-    withCredentials(bindings: [certificate(credentialsId: 'github-credentials', variable: 'TOKEN')]) {
+    withCredentials([usernameColonPassword(credentialsId: 'github-credentials', variable: 'TOKEN')]) {
         sh """
             curl -XPOST -H \"Authorization: token ${TOKEN}\" https://api.github.com/repos/adamcaseyclark/react-calculator/statuses/${GIT_COMMIT} -d \"{
             \\\"state\\\": \\\"${state}\\\",
