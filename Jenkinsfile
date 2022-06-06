@@ -3,11 +3,14 @@
 PROJECT_NAME="react-calculator"
 BRANCH_NAME="master"
 BUILD_URL=""
+PROJECT_BUILD_NAME=""
 
 pipeline {
     agent any
     environment {
         BUILD_DATE = sh(script: 'date -u',returnStdout: true).trim()
+        BUILD_PREFIX = "${PROJECT_NAME}-${GIT_COMMIT}"
+        PROJECT_BUILD_NAME = "${PROJECT_NAME}-${BUILD_NUMBER}"
     }
     stages {
         stage('Git') {
@@ -48,27 +51,21 @@ pipeline {
 
         stage('Test') {
             steps {
-                try {
-                    sh "echo Running Test Block - Currently Commented Out"
-                    // sh "docker run ${PROJECT_NAME}:${GIT_COMMIT} test --offline"
-                    // postBuildStatusToGithub("success", "The build has passed!");
-                }
-                catch (error) {
-                    postBuildStatusToGithub("failure", "The build has failed!");
-                    throw error
-                }
+                sh "echo Running Test Block - Currently Commented Out"
+                // sh "docker run ${PROJECT_NAME}:${GIT_COMMIT} test --offline"
+                // postBuildStatusToGithub("success", "The build has passed!");
             }
         }
 
         stage('UI Test') {
             steps {
-                BUILD_PREFIX = "${PROJECT_NAME}-${GIT_COMMIT}"
+//                 BUILD_PREFIX = "${PROJECT_NAME}-${GIT_COMMIT}"
 
                 // sh """
                     // docker-compose -f docker/cypress-test.yml -p ${BUILD_PREFIX} up -d
                 // """
 
-                PROJECT_BUILD_NAME = "${PROJECT_NAME}-${BUILD_NUMBER}"
+//                 PROJECT_BUILD_NAME = "${PROJECT_NAME}-${BUILD_NUMBER}"
 
                 // build cypress container
                 sh """
@@ -80,30 +77,37 @@ pipeline {
                     .
                 """
 
-                // run cypress tests in parallel
-                sh 'cd code && find ./cypress/integration/ -name "*.spec.js" > ../listOfFiles'
-                def testFiles = readFile("listOfFiles").split().toList();
-                sh 'rm listOfFiles'
-                def testFileSplitCount = testFiles.size().intdiv(5) + 1;
-                def testFilesArray = testFiles.collate(testFileSplitCount);
-                def parallelStagesMap = testFilesArray.collectEntries {
-                    ["UI Test ${testFilesArray.indexOf(it)}" : {
-                        node("${env.NODE_NAME}") {
-                            timeout(time: 5, activity: true, unit: 'MINUTES') {
-                                sh """
-                                    docker run --network=${BUILD_PREFIX}-cypressnet \
-                                        --env CYPRESS_RUNNING_IN_DOCKER=true \
-                                        --name ${PROJECT_BUILD_NAME}-cypress-${testFilesArray.indexOf(it)} \
-                                        ${PROJECT_BUILD_NAME}-cypress:${GIT_COMMIT} run --spec '${it.join(',')}'
-                                """
-                            }
-                        }
-                    }]
-                }
-                script {
-                    parallel parallelStagesMap
-                }
-                postBuildStatusToGithub("success", "The build has passed!");
+                sh """
+                    docker run --network=${BUILD_PREFIX}-cypressnet \
+                        --env CYPRESS_RUNNING_IN_DOCKER=true \
+                        --name ${PROJECT_BUILD_NAME}-cypress-${testFilesArray.indexOf(it)} \
+                        ${PROJECT_BUILD_NAME}-cypress:${GIT_COMMIT} run --spec '${it.join(',')}'
+                """
+
+//                 // run cypress tests in parallel
+//                 sh 'cd code && find ./cypress/integration/ -name "*.spec.js" > ../listOfFiles'
+//                 def testFiles = readFile("listOfFiles").split().toList();
+//                 sh 'rm listOfFiles'
+//                 def testFileSplitCount = testFiles.size().intdiv(5) + 1;
+//                 def testFilesArray = testFiles.collate(testFileSplitCount);
+//                 def parallelStagesMap = testFilesArray.collectEntries {
+//                     ["UI Test ${testFilesArray.indexOf(it)}" : {
+//                         node("${env.NODE_NAME}") {
+//                             timeout(time: 5, activity: true, unit: 'MINUTES') {
+//                                 sh """
+//                                     docker run --network=${BUILD_PREFIX}-cypressnet \
+//                                         --env CYPRESS_RUNNING_IN_DOCKER=true \
+//                                         --name ${PROJECT_BUILD_NAME}-cypress-${testFilesArray.indexOf(it)} \
+//                                         ${PROJECT_BUILD_NAME}-cypress:${GIT_COMMIT} run --spec '${it.join(',')}'
+//                                 """
+//                             }
+//                         }
+//                     }]
+//                 }
+//                 script {
+//                     parallel parallelStagesMap
+//                 }
+//                 postBuildStatusToGithub("success", "The build has passed!");
             }
         }
     }
