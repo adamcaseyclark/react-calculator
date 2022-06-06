@@ -51,8 +51,8 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh "echo Running Test Block - Currently Commented Out"
-                sh "docker run ${PROJECT_NAME}:${GIT_COMMIT} unit:test --offline"
+//                 sh "echo Running Test Block - Currently Commented Out"
+                sh "docker run ${PROJECT_NAME}:${GIT_COMMIT} test --offline"
                 postBuildStatusToGithub("success", "The build has passed!");
             }
         }
