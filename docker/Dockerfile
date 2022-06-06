@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 # Keep upstart quiet
 RUN dpkg-divert --local --rename --add /sbin/initctl
@@ -32,7 +32,7 @@ RUN apt-get update && apt-get install -y \
 FROM node:8
 RUN rm -rf /usr/local/lib/node_modules/npm \
   && mkdir /usr/local/lib/node_modules/npm \
-  && curl -sL https://github.com/npm/npm/archive/v5.7.1.tar.gz | tar xz -C /usr/local/lib/node_modules/npm --strip-components=1 \
+  && curl -sL https://github.com/npm/npm/archive/v6.1.0.tar.gz | tar xz -C /usr/local/lib/node_modules/npm --strip-components=1 \
   && npm --version
 
 # DEBUG
