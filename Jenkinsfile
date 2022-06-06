@@ -3,6 +3,7 @@
 PROJECT_NAME="react-calculator"
 GIT_HASH=""
 BRANCH_NAME=""
+BRANCH_DATE=""
 BUILD_URL="${EXPOSED_URL}/job/${PROJECT_NAME}/${BRANCH_NAME}/"
 
 pipeline {
