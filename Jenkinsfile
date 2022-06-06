@@ -134,9 +134,9 @@ pipeline {
                         }
                     }
                 }
-                catch (error) {
-                    // throw error // non-blocking but should still show a failed stage
-                }
+//                 catch (error) {
+//                     // throw error // non-blocking but should still show a failed stage
+//                 }
 
     }
 }
