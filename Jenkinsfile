@@ -30,11 +30,12 @@ pipeline {
                 ])
 
                 sh "ls -ltr"
+                sh "git rev-parse HEAD"
 
-                GIT_HASH = sh(script: 'git rev-parse HEAD',returnStdout: true).trim()
+//                 GIT_HASH = sh(script: 'git rev-parse HEAD',returnStdout: true).trim()
 //                 BUILD_DATE = sh(script: 'date -u',returnStdout: true).trim()
 
-                sh "echo GIT_HASH is: ${GIT_HASH}"
+//                 sh "echo GIT_HASH is: ${GIT_HASH}"
 //                 sh "echo BUILD_DATE is: ${BUILD_DATE}"
 //                 sh "echo PROJECT_NAME is: ${PROJECT_NAME}"
 //                 sh "echo PROJECT_REGISTRY_URI is: ${PROJECT_REGISTRY_URI}"
