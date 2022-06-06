@@ -31,7 +31,7 @@ pipeline {
 //                     ]
 //                 ])
 
-                sh "echo env is: ${env}"
+                sh "echo env is: ${env.BRANCH_NAME}"
 //                 sh 'printenv'
 //                 env.ENV = sh(script: 'printenv', returnStdout: true)
 //                 env.GIT_HASH = sh(script: 'git rev-parse HEAD',returnStdout: true).trim()
