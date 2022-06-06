@@ -5,8 +5,10 @@
   "author": "adam casey clark",
   "scripts": {
     "start": "react-scripts start",
+    "cypress:ci": "npx cypress run",
+    "cypress:test": "cypress run -s \"cypress/integration/**\"",
+    "test": "npm run lint && node test.js",
     "unit:test": "jest src/helpers/test/**",
-    "test": "cypress run -s \"cypress/integration/**\"",
     "open": "cypress open",
     "lint": "eslint --ext .jsx,.js ./src ./cypress",
     "lint:fix": "eslint --fix --ext .jsx,.js ./src ./cypress",
@@ -28,9 +30,13 @@
     "@babel/core": "^7.17.10",
     "@babel/eslint-parser": "^7.17.0",
     "@babel/preset-env": "^7.17.10",
+    "babel-core": "^6.26.3",
     "babel-jest": "^28.1.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-register": "^6.26.0",
     "eslint": "^8.14.0",
     "eslint-plugin-cypress": "^2.12.1",
+    "jest": "^28.1.0",
     "prettier": "^2.6.2"
   },
   "eslintConfig": {
