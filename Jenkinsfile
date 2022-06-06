@@ -26,7 +26,7 @@ pipeline {
                     userRemoteConfigs: [
                         [
                             credentialsId: 'github-credentials',
-                            url: 'git@github.com:adamcaseyclark/react-calculator.git'
+                            url: 'https://github.com/adamcaseyclark/react-calculator.git'
                         ]
                     ]
                 ])
