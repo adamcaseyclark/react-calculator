@@ -104,7 +104,6 @@ pipeline {
                     parallel parallelStagesMap
                 }
                 postBuildStatusToGithub("success", "The build has passed!");
-                }
             }
         }
     }
