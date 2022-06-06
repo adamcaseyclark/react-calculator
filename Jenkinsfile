@@ -13,22 +13,23 @@ pipeline {
     stages {
         stage('Git') {
             steps {
-                checkout([
-                    $class: 'GitSCM',
-                    branches: [
-                        [
-                            name: "${env.BRANCH_NAME}"
-                        ]
-                    ],
-                    doGenerateSubmoduleConfigurations: false,
-                    extensions: [],
-                    submoduleCfg: [],
-                    userRemoteConfigs: [
-                        [
-                            url: 'git@github.com:adamcaseyclark/react-calculator.git'
-                        ]
-                    ]
-                ])
+//                 checkout([
+//                     $class: 'GitSCM',
+//                     branches: [
+//                         [
+//                             name: "${env.BRANCH_NAME}"
+//                         ]
+//                     ],
+//                     doGenerateSubmoduleConfigurations: false,
+//                     extensions: [],
+//                     submoduleCfg: [],
+//                     userRemoteConfigs: [
+//                         [
+//                             credentialsId: 'jenkinsmaster',
+//                             url: 'git@github.com:adamcaseyclark/react-calculator.git'
+//                         ]
+//                     ]
+//                 ])
 
                 sh "echo env is: ${env}"
 //                 sh 'printenv'
