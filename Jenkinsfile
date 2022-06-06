@@ -5,7 +5,9 @@ BRANCH_NAME="master"
 BUILD_URL=""
 
 pipeline {
-    agent any
+    agent {
+        docker { image 'node:16.13.1-alpine' }
+    }
     environment {
         BUILD_DATE = sh(script: 'date -u',returnStdout: true).trim()
     }
