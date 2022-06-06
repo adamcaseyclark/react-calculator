@@ -35,22 +35,22 @@ pipeline {
                 sh "date -u"
                 sh "echo env.BUILD_URL is ${env.BUILD_URL}"
 
-                BUILD_DATE = """${sh(
-                                returnStdout: true,
-                                script: 'echo "date -u"'
-                            )}"""
-
-//                 GIT_HASH = sh(script: 'git rev-parse HEAD',returnStdout: true).trim()
-//                 BUILD_DATE = sh(script: 'date -u',returnStdout: true).trim()
-
-                sh "echo GIT_HASH is: ${GIT_COMMIT}"
-                sh "echo BUILD_DATE is: ${BUILD_DATE}"
-                sh "echo PROJECT_NAME is: ${PROJECT_NAME}"
-//                 sh "echo PROJECT_REGISTRY_URI is: ${PROJECT_REGISTRY_URI}"
-                sh "echo BRANCH_NAME is: ${BRANCH_NAME}"
-                sh "echo BUILD_NUMBER is: ${BUILD_NUMBER}"
-
-                postBuildStatusToGithub("pending", "The build is pending!");
+//                 BUILD_DATE = """${sh(
+//                                 returnStdout: true,
+//                                 script: 'echo "date -u"'
+//                             )}"""
+//
+// //                 GIT_HASH = sh(script: 'git rev-parse HEAD',returnStdout: true).trim()
+// //                 BUILD_DATE = sh(script: 'date -u',returnStdout: true).trim()
+//
+//                 sh "echo GIT_HASH is: ${GIT_COMMIT}"
+//                 sh "echo BUILD_DATE is: ${BUILD_DATE}"
+//                 sh "echo PROJECT_NAME is: ${PROJECT_NAME}"
+// //                 sh "echo PROJECT_REGISTRY_URI is: ${PROJECT_REGISTRY_URI}"
+//                 sh "echo BRANCH_NAME is: ${BRANCH_NAME}"
+//                 sh "echo BUILD_NUMBER is: ${BUILD_NUMBER}"
+//
+//                 postBuildStatusToGithub("pending", "The build is pending!");
             }
         }
     }
