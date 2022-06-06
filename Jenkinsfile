@@ -51,14 +51,14 @@ pipeline {
 
         stage('Test') {
             steps {
-//                 sh "echo Running Test Block - Currently Commented Out"
+                sh "echo Running Test Block - Currently Commented Out"
                 sh "docker run ${PROJECT_NAME}:${GIT_COMMIT} test --offline"
                 postBuildStatusToGithub("success", "The build has passed!");
             }
         }
 
-//         stage('UI Test') {
-//             steps {
+        stage('UI Test') {
+            steps {
 // //                 BUILD_PREFIX = "${PROJECT_NAME}-${GIT_COMMIT}"
 //
 //                 sh "echo ${docker ps}"
@@ -109,10 +109,10 @@ pipeline {
 // //                     parallel parallelStagesMap
 // //                 }
 // //                 postBuildStatusToGithub("success", "The build has passed!");
-//             }
-//         }
-//     }
-// }
+            }
+        }
+    }
+}
 
 
 def postBuildStatusToGithub(state, description) {
