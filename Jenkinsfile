@@ -2,8 +2,6 @@
 
 PROJECT_NAME="react-calculator"
 BRANCH_NAME="master"
-// BUILD_URL=""
-// PROJECT_BUILD_NAME=""
 
 pipeline {
     agent any
@@ -79,7 +77,7 @@ pipeline {
                     docker run \
                         --env CYPRESS_RUNNING_IN_DOCKER=true \
                         --name $PROJECT_BUILD_NAME-cypress-1 \
-                        $PROJECT_BUILD_NAME-cypress:${GIT_COMMIT} run --spec'
+                        $PROJECT_BUILD_NAME-cypress:${GIT_COMMIT} run cypress:test
                 """
 
 //                 // run cypress tests in parallel
