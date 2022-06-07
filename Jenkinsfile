@@ -199,7 +199,7 @@ node {
 def postBuildStatusToGithub(state, description) {
     withCredentials([string(credentialsId: 'react-calculator-token', variable: 'TOKEN')]) {
         sh """
-            curl -XPOST -H \"Authorization: token ${TOKEN}\" https://api.github.com/repos/adamcaseyclark/react-calculator/statuses/${GIT_COMMIT} -d \"{
+            curl -XPOST -H \"Authorization: token ${TOKEN}\" https://api.github.com/repos/adamcaseyclark/react-calculator/statuses/${GIT_HASH} -d \"{
             \\\"state\\\": \\\"${state}\\\",
             \\\"target_url\\\": \\\"${env.BUILD_URL}\\\",
             \\\"description\\\": \\\"${description}\\\"
