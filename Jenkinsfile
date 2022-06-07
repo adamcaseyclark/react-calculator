@@ -39,6 +39,47 @@ node {
     stage('Build') {
         sh "docker build -f docker/Dockerfile -t ${PROJECT_NAME}:${GIT_HASH} --build-arg BUILD_DATE=\"${BUILD_DATE}\" --build-arg GIT_HASH=${GIT_HASH} --force-rm=true --no-cache=true --pull=true --rm=true ."
     }
+
+    stage('UI Tests') {
+
+        BUILD_PREFIX = "${PROJECT_NAME}-${GIT_HASH}"
+        PROJECT_BUILD_NAME = "${PROJECT_NAME}-${BUILD_NUMBER}"
+
+        // build cypress container
+        sh """
+        docker build -f docker/CypressDockerfile -t ${PROJECT_BUILD_NAME}-cypress:${GIT_HASH} \
+            --build-arg PROJECT_NAME=${PROJECT_NAME} \
+            --build-arg GIT_HASH=${GIT_COMMIT} \
+            --force-rm=true \
+            --no-cache=true \
+            .
+        """
+
+        // run cypress tests in parallel
+        sh 'cd code && find ./cypress/integration/ -name "*.spec.js" > ../listOfFiles'
+        def testFiles = readFile("listOfFiles").split().toList();
+        sh 'rm listOfFiles'
+        def testFileSplitCount = testFiles.size().intdiv(5) + 1;
+        def testFilesArray = testFiles.collate(testFileSplitCount);
+        def parallelStagesMap = testFilesArray.collectEntries {
+            ["UI Test ${testFilesArray.indexOf(it)}" : {
+                node("${env.NODE_NAME}") {
+                    timeout(time: 5, activity: true, unit: 'MINUTES') {
+                        sh """
+                            docker run \
+                                --env CYPRESS_RUNNING_IN_DOCKER=true \
+                                --name ${PROJECT_BUILD_NAME}-cypress-${testFilesArray.indexOf(it)} \
+                                ${PROJECT_BUILD_NAME}-cypress:${GIT_HASH} run --spec '${it.join(',')}'
+                        """
+                    }
+                }
+            }]
+        }
+        script {
+            parallel parallelStagesMap
+        }
+        postBuildStatusToGithub("success", "The build has passed!");
+    }
 }
 
 // pipeline {
