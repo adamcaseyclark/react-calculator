@@ -49,7 +49,7 @@ node {
         sh """
         docker build -f docker/CypressDockerfile -t ${PROJECT_BUILD_NAME}-cypress:${GIT_HASH} \
             --build-arg PROJECT_NAME=${PROJECT_NAME} \
-            --build-arg GIT_HASH=${GIT_COMMIT} \
+            --build-arg GIT_HASH=${GIT_HASH} \
             --force-rm=true \
             --no-cache=true \
             .
