@@ -58,18 +58,16 @@ pipeline {
 
         stage('UI Test') {
             steps {
-//                 BUILD_PREFIX = "${PROJECT_NAME}-${GIT_COMMIT}"
+
 
 //                 sh "echo ${docker ps}"
 //                 sh """
 //                     docker-compose -f docker/cypress-test.yml -p ${BUILD_PREFIX} up -d
 //                 """
 
-//                 PROJECT_BUILD_NAME = "${PROJECT_NAME}-${BUILD_NUMBER}"
-
                 // build cypress container
                 sh """
-                docker build -f docker/CypressDockerfile -t ${PROJECT_NAME}-${env.BUILD_NUMBER}-cypress:${GIT_COMMIT} \
+                docker build -f docker/CypressDockerfile -t ${PROJECT_BUILD_NAME}-cypress:${GIT_COMMIT} \
                     --build-arg PROJECT_NAME=${PROJECT_NAME} \
                     --build-arg GIT_HASH=${GIT_COMMIT} \
                     --force-rm=true \
@@ -78,10 +76,10 @@ pipeline {
                 """
 
                 sh """
-                    docker run --network=${PROJECT_NAME}-${GIT_COMMIT}-cypressnet \
+                    docker run \
                         --env CYPRESS_RUNNING_IN_DOCKER=true \
-                        --name ${PROJECT_BUILD_NAME}-cypress-${testFilesArray.indexOf(it)} \
-                        ${PROJECT_BUILD_NAME}-cypress:${GIT_COMMIT} run --spec '${it.join(',')}'
+                        --name ${PROJECT_BUILD_NAME}-cypress-1 \
+                        ${PROJECT_BUILD_NAME}-cypress:${GIT_COMMIT} run --spec'
                 """
 
 //                 // run cypress tests in parallel
