@@ -61,6 +61,8 @@ node {
                     BUILD_PREFIX = "${PROJECT_NAME}-${GIT_HASH}"
                     PROJECT_BUILD_NAME = "${PROJECT_NAME}-${BUILD_NUMBER}"
 
+                    sh "docker run ${PROJECT_NAME}:${GIT_HASH}"
+
                     // build cypress container
                     sh """
                     docker build -f docker/CypressDockerfile -t ${PROJECT_BUILD_NAME}-cypress:${GIT_HASH} \
@@ -70,6 +72,18 @@ node {
                         --no-cache=true \
                         .
                     """
+
+                    timeout(3) {
+                        waitUntil {
+                            script {
+                                def localhost3000IsNowRunning = sh(
+                                    script: "wget -q http://localhost:3000 -O /dev/null",
+                                    returnStatus: true
+                                )
+                                return (localhost3000IsNowRunning == 0);
+                            }
+                        }
+                    }
 
                     // run cypress tests in parallel
                     sh 'cd code && find ./cypress/integration/ -name "*.spec.js" > ../listOfFiles'
