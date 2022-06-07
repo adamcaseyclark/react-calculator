@@ -10,11 +10,11 @@ pipeline {
         BUILD_PREFIX = "${PROJECT_NAME}-${GIT_COMMIT}"
         PROJECT_BUILD_NAME = "${PROJECT_NAME}-${env.BUILD_NUMBER}"
 
-        sh 'cd code && find ./cypress/integration/ -name "*.spec.js" > ../listOfFiles'
-        TEST_FILES = readFile("listOfFiles").split().toList();
-        sh 'rm listOfFiles'
-        TEST_FILE_SPLIT_COUNT = TEST_FILES.size().intdiv(5) + 1;
-        TEST_FILES_ARRAY = TEST_FILES.collate(TEST_FILE_SPLIT_COUNT);
+        LIST_OF_FILES = sh(script: 'cd code && find ./cypress/integration/ -name "*.spec.js"', returnStdout: true)
+        TEST_FILES = sh(script: 'readFile("$LIST_OF_FILES").split().toList()', returnStdout: true)
+        // sh 'rm listOfFiles'
+        TEST_FILE_SPLIT_COUNT = sh(script: '$TEST_FILES.size().intdiv(5) + 1', returnStdout: true)
+        TEST_FILES_ARRAY = sh(script: '$TEST_FILES.collate($TEST_FILE_SPLIT_COUNT)', returnStdout: true)
         PARALLEL_STAGES_MAP
     }
     stages {
