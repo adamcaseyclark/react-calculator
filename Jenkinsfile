@@ -64,13 +64,13 @@ node {
                     BUILD_PREFIX = "${PROJECT_NAME}-${GIT_HASH}"
                     PROJECT_BUILD_NAME = "${PROJECT_NAME}-${BUILD_NUMBER}"
 
-                    DOCKER_PS = sh(script: 'docker ps',returnStdout: true).trim()
-                    sh "echo DOCKER_PS is: ${DOCKER_PS}"
-
-                    sh """
-                        GIT_HASH=${GIT_HASH} PORT_FOR_CALCULATOR="${portForCalculator}" \
-                        docker-compose -f docker/cypress-test.yml -p ${BUILD_PREFIX} up -d
-                    """
+//                     DOCKER_PS = sh(script: 'docker ps',returnStdout: true).trim()
+//                     sh "echo DOCKER_PS is: ${DOCKER_PS}"
+//
+//                     sh """
+//                         GIT_HASH=${GIT_HASH} PORT_FOR_CALCULATOR="${portForCalculator}" \
+//                         docker-compose -f docker/cypress-test.yml -p ${BUILD_PREFIX} up -d
+//                     """
 
                     // build cypress container
                     sh """
