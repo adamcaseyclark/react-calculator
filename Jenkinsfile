@@ -10,7 +10,7 @@ pipeline {
     environment {
         BUILD_DATE = sh(script: 'date -u',returnStdout: true).trim()
         BUILD_PREFIX = "${PROJECT_NAME}-${GIT_COMMIT}"
-        PROJECT_BUILD_NAME = "${PROJECT_NAME}-${BUILD_NUMBER}"
+        PROJECT_BUILD_NAME = "${PROJECT_NAME}-${env.BUILD_NUMBER}"
     }
     stages {
         stage('Git') {
@@ -69,7 +69,7 @@ pipeline {
 
                 // build cypress container
                 sh """
-                docker build -f docker/CypressDockerfile -t ${PROJECT_BUILD_NAME}-cypress:${GIT_COMMIT} \
+                docker build -f docker/CypressDockerfile -t ${PROJECT_NAME}-${env.BUILD_NUMBER}-cypress:${GIT_COMMIT} \
                     --build-arg PROJECT_NAME=${PROJECT_NAME} \
                     --build-arg GIT_HASH=${GIT_COMMIT} \
                     --force-rm=true \
@@ -78,7 +78,7 @@ pipeline {
                 """
 
                 sh """
-                    docker run --network=${BUILD_PREFIX}-cypressnet \
+                    docker run --network=${PROJECT_NAME}-${GIT_COMMIT}-cypressnet \
                         --env CYPRESS_RUNNING_IN_DOCKER=true \
                         --name ${PROJECT_BUILD_NAME}-cypress-${testFilesArray.indexOf(it)} \
                         ${PROJECT_BUILD_NAME}-cypress:${GIT_COMMIT} run --spec '${it.join(',')}'
