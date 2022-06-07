@@ -64,9 +64,9 @@ node {
                     BUILD_PREFIX = "${PROJECT_NAME}-${GIT_HASH}"
                     PROJECT_BUILD_NAME = "${PROJECT_NAME}-${BUILD_NUMBER}"
 
-                    sh """docker stop $(docker ps -aq)"""
-                    sh """docker rm $(docker ps -aq)"""
-                    sh """docker rmi $(docker ps -aq)"""
+                    sh(script: 'docker stop $(docker ps -aq)', returnStdout: true)
+                    sh(script: 'docker rm $(docker ps -aq)', returnStdout: true)
+                    sh(script: 'docker rmi $(docker ps -aq)', returnStdout: true)
 
                     // DOCKER_PS = sh(script: 'docker ps',returnStdout: true).trim()
                     // sh "echo DOCKER_PS is: ${DOCKER_PS}"
