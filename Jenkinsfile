@@ -58,22 +58,16 @@ node {
         stage('UI Tests') {
             timestamps {
                 try {
+                    random = new Random()
+                    portForCalculator = Math.abs(random.nextInt(65535 - 49152) + 1) + 49152
+
                     BUILD_PREFIX = "${PROJECT_NAME}-${GIT_HASH}"
                     PROJECT_BUILD_NAME = "${PROJECT_NAME}-${BUILD_NUMBER}"
 
-                    sh "docker run ${PROJECT_NAME}:${GIT_HASH}"
-
-                    timeout(3) {
-                        waitUntil {
-                            script {
-                                def localhost3000IsNowRunning = sh(
-                                    script: "wget -q http://localhost:3000 -O /dev/null",
-                                    returnStatus: true
-                                )
-                                return (localhost3000IsNowRunning == 0);
-                            }
-                        }
-                    }
+                    sh """
+                        GIT_HASH=${GIT_HASH} PORT_FOR_CALCULATOR="${portForCalculator}" \
+                        docker-compose -f docker/cypress-test.yml -p ${BUILD_PREFIX} up -d
+                    """
 
                     // build cypress container
                     sh """
@@ -84,6 +78,18 @@ node {
                         --no-cache=true \
                         .
                     """
+
+                    timeout(3) {
+                        waitUntil {
+                            script {
+                                def localhost3000IsNowRunning = sh(
+                                    script: "wget -q http://localhost:${PORT_FOR_CALCULATOR} -O /dev/null",
+                                    returnStatus: true
+                                )
+                                return (localhost3000IsNowRunning == 0);
+                            }
+                        }
+                    }
 
                     // run cypress tests in parallel
                     sh 'cd code && find ./cypress/integration/ -name "*.spec.js" > ../listOfFiles'

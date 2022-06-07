@@ -1,0 +1,7 @@
+version: "3.8"
+
+services:
+  calculator:
+    ports:
+      - "${PORT_FOR_CALCULATOR}:3000"
+    image: react-calculator:${GIT_HASH}
