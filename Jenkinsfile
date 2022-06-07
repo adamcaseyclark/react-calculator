@@ -108,8 +108,6 @@ node {
                     sh """
                     docker-compose -f docker/cypress-test.yml -p ${PROJECT_NAME}:${GIT_HASH} down -v
                     """
-                    }
-
                     sh "docker rmi ${PROJECT_BUILD_NAME}-cypress:${GIT_HASH}"
                 }
             }
