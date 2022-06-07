@@ -43,7 +43,7 @@ node {
     stage('Test') {
         timestamps {
             try {
-                sh('echo SKIPPING TEST BLOCK CURRENTLY')
+                sh('echo SKIPPING TEST BLOCK CURRENTLY.....')
                 // sh "docker run ${PROJECT_NAME}:${GIT_HASH} test --offline"
                 // postBuildStatusToGithub("success", "The build has passed!");
             }
@@ -63,16 +63,6 @@ node {
 
                     sh "docker run ${PROJECT_NAME}:${GIT_HASH}"
 
-                    // build cypress container
-                    sh """
-                    docker build -f docker/CypressDockerfile -t ${PROJECT_BUILD_NAME}-cypress:${GIT_HASH} \
-                        --build-arg PROJECT_NAME=${PROJECT_NAME} \
-                        --build-arg GIT_HASH=${GIT_HASH} \
-                        --force-rm=true \
-                        --no-cache=true \
-                        .
-                    """
-
                     timeout(3) {
                         waitUntil {
                             script {
@@ -84,6 +74,16 @@ node {
                             }
                         }
                     }
+
+                    // build cypress container
+                    sh """
+                    docker build -f docker/CypressDockerfile -t ${PROJECT_BUILD_NAME}-cypress:${GIT_HASH} \
+                        --build-arg PROJECT_NAME=${PROJECT_NAME} \
+                        --build-arg GIT_HASH=${GIT_HASH} \
+                        --force-rm=true \
+                        --no-cache=true \
+                        .
+                    """
 
                     // run cypress tests in parallel
                     sh 'cd code && find ./cypress/integration/ -name "*.spec.js" > ../listOfFiles'
