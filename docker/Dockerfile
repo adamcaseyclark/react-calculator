@@ -31,7 +31,7 @@ RUN apt-get update && apt-get install -y \
 FROM node:14
 RUN rm -rf /usr/local/lib/node_modules/npm \
   && mkdir /usr/local/lib/node_modules/npm \
-  && curl -sL https://github.com/npm/npm/archive/v6.1.0.tar.gz | tar xz -C /usr/local/lib/node_modules/npm --strip-components=1 \
+  && curl -sL https://github.com/npm/cli/archive/v7.1.0.tar.gz | tar xz -C /usr/local/lib/node_modules/npm --strip-components=1 \
   && npm --version
 
 # DEBUG
