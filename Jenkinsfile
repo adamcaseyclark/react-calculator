@@ -89,7 +89,7 @@ node {
                         waitUntil {
                             script {
                                 def localhost3000IsNowRunning = sh(
-                                    script: "wget -q http://localhost:${PORT_FOR_CALCULATOR} -O /dev/null",
+                                    script: "wget -q http://localhost:3000 -O /dev/null",
                                     returnStatus: true
                                 )
                                 return (localhost3000IsNowRunning == 0);
