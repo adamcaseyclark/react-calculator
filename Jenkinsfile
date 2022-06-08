@@ -35,9 +35,9 @@ node {
 
         postBuildStatusToGithub("pending", "The build is pending!");
 
-//         sh(script: 'docker stop $(docker ps -aq)', returnStdout: true)
-//         sh(script: 'docker rm $(docker ps -aq)', returnStdout: true)
-//         sh(script: 'docker rmi $(docker ps -aq)', returnStdout: true)
+        // sh(script: 'docker stop $(docker ps -aq)', returnStdout: true)
+        // sh(script: 'docker rm $(docker ps -aq)', returnStdout: true)
+        // sh(script: 'docker rmi $(docker ps -aq)', returnStdout: true)
     }
 
     stage('Build') {
