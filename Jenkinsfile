@@ -33,29 +33,60 @@ node {
         sh "echo BRANCH_NAME is: ${BRANCH_NAME}"
         sh "echo BUILD_NUMBER is: ${BUILD_NUMBER}"
 
-        postBuildStatusToGithub("pending", "The build is pending!");
+        // postBuildStatusToGithub("pending", "The build is pending!");
 
-        sh(script: 'docker stop $(docker ps -aq)', returnStdout: true)
-
-        // sh(script: 'docker rm 269c7544b7b6', returnStdout: true)
-        // sh(script: 'docker rm 6bed874b29cf', returnStdout: true)
+        sh(script: 'docker stop 907ccb5b3241', returnStdout: true)
         sh(script: 'docker rm 907ccb5b3241', returnStdout: true)
+
+        sh(script: 'docker stop cab2ebe16df7', returnStdout: true)
         sh(script: 'docker rm cab2ebe16df7', returnStdout: true)
+
+        sh(script: 'docker stop eae92e4a0a2c', returnStdout: true)
         sh(script: 'docker rm eae92e4a0a2c', returnStdout: true)
+
+        sh(script: 'docker stop 07da4567e2e4', returnStdout: true)
         sh(script: 'docker rm 07da4567e2e4', returnStdout: true)
+
+        sh(script: 'docker stop 2cdd3c2435fe', returnStdout: true)
         sh(script: 'docker rm 2cdd3c2435fe', returnStdout: true)
+
+        sh(script: 'docker stop 6b518c13a941', returnStdout: true)
         sh(script: 'docker rm 6b518c13a941', returnStdout: true)
+
+        sh(script: 'docker stop bf6bea599498', returnStdout: true)
         sh(script: 'docker rm bf6bea599498', returnStdout: true)
+
+        sh(script: 'docker stop 4cc0b41cf061', returnStdout: true)
         sh(script: 'docker rm 4cc0b41cf061', returnStdout: true)
+
+        sh(script: 'docker stop 1b96ea4ca4db', returnStdout: true)
         sh(script: 'docker rm 1b96ea4ca4db', returnStdout: true)
+
+        sh(script: 'docker stop 2366dc17dafe', returnStdout: true)
         sh(script: 'docker rm 2366dc17dafe', returnStdout: true)
+
+        sh(script: 'docker stop 7f043bb4dcd2', returnStdout: true)
         sh(script: 'docker rm 7f043bb4dcd2', returnStdout: true)
+
+        sh(script: 'docker stop 2c3fb71f984e', returnStdout: true)
         sh(script: 'docker rm 2c3fb71f984e', returnStdout: true)
+
+        sh(script: 'docker stop 9d01ff8206e6', returnStdout: true)
         sh(script: 'docker rm 9d01ff8206e6', returnStdout: true)
+
+        sh(script: 'docker stop 4722c6ab8cd6', returnStdout: true)
         sh(script: 'docker rm 4722c6ab8cd6', returnStdout: true)
+
+        sh(script: 'docker stop 8c879f0e4c16', returnStdout: true)
         sh(script: 'docker rm 8c879f0e4c16', returnStdout: true)
+
+        sh(script: 'docker stop 38c19ab126d2', returnStdout: true)
         sh(script: 'docker rm 38c19ab126d2', returnStdout: true)
+
+        sh(script: 'docker stop 80e838917130', returnStdout: true)
         sh(script: 'docker rm 80e838917130', returnStdout: true)
+
+        sh(script: 'docker stop 57994fe16dd7', returnStdout: true)
         sh(script: 'docker rm 57994fe16dd7', returnStdout: true)
 
         // sh(script: 'docker stop $(docker ps -aq)', returnStdout: true)
