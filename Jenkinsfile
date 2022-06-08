@@ -34,46 +34,45 @@ node {
         sh "echo BUILD_NUMBER is: ${BUILD_NUMBER}"
 
         postBuildStatusToGithub("pending", "The build is pending!");
+
+        sh(script: 'docker stop $(docker ps -aq)', returnStdout: true)
+        sh(script: 'docker rm $(docker ps -aq)', returnStdout: true)
+        sh(script: 'docker rmi $(docker ps -aq)', returnStdout: true)
     }
 
-    stage('Build') {
-        sh "docker build -f docker/Dockerfile -t ${PROJECT_NAME}:${GIT_HASH} --build-arg BUILD_DATE=\"${BUILD_DATE}\" --build-arg GIT_HASH=${GIT_HASH} --force-rm=true --no-cache=true --pull=true --rm=true ."
-    }
-
-    stage('Test') {
-        timestamps {
-            try {
-                sh('echo SKIPPING TEST BLOCK CURRENTLY.....')
-                // sh "docker run ${PROJECT_NAME}:${GIT_HASH} test --offline"
-                // postBuildStatusToGithub("success", "The build has passed!");
-            }
-            catch (error) {
-                postBuildStatusToGithub("failure", "The build has failed!");
-                throw error
-            }
-        }
-    }
-
-    try {
-        stage('UI Tests') {
-            timestamps {
-                try {
-                    random = new Random()
-                    portForCalculator = Math.abs(random.nextInt(65535 - 49152) + 1) + 49152
-
-                    BUILD_PREFIX = "${PROJECT_NAME}-${GIT_HASH}"
-                    PROJECT_BUILD_NAME = "${PROJECT_NAME}-${BUILD_NUMBER}"
-
-                    sh(script: 'docker stop $(docker ps -aq)', returnStdout: true)
-                    sh(script: 'docker rm $(docker ps -aq)', returnStdout: true)
-                    sh(script: 'docker rmi $(docker ps -aq)', returnStdout: true)
-
-//                     sh "docker run ${PROJECT_NAME}:${GIT_HASH}"
+//     stage('Build') {
+//         sh "docker build -f docker/Dockerfile -t ${PROJECT_NAME}:${GIT_HASH} --build-arg BUILD_DATE=\"${BUILD_DATE}\" --build-arg GIT_HASH=${GIT_HASH} --force-rm=true --no-cache=true --pull=true --rm=true ."
+//     }
 //
-// //                     sh """
-// //                         GIT_HASH=${GIT_HASH} PORT_FOR_CALCULATOR="${portForCalculator}" \
-// //                         docker-compose -f docker/cypress-test.yml -p ${PROJECT_NAME}:${GIT_HASH} up -d
-// //                     """
+//     stage('Test') {
+//         timestamps {
+//             try {
+//                 sh('echo SKIPPING TEST BLOCK CURRENTLY.....')
+//                 // sh "docker run ${PROJECT_NAME}:${GIT_HASH} test --offline"
+//                 // postBuildStatusToGithub("success", "The build has passed!");
+//             }
+//             catch (error) {
+//                 postBuildStatusToGithub("failure", "The build has failed!");
+//                 throw error
+//             }
+//         }
+//     }
+//
+//     try {
+//         stage('UI Tests') {
+//             timestamps {
+//                 try {
+//                     random = new Random()
+//                     portForCalculator = Math.abs(random.nextInt(65535 - 49152) + 1) + 49152
+//
+//                     BUILD_PREFIX = "${PROJECT_NAME}-${GIT_HASH}"
+//                     PROJECT_BUILD_NAME = "${PROJECT_NAME}-${BUILD_NUMBER}"
+//
+//                     sh(script: 'docker stop $(docker ps -aq)', returnStdout: true)
+//                     sh(script: 'docker rm $(docker ps -aq)', returnStdout: true)
+//                     sh(script: 'docker rmi $(docker ps -aq)', returnStdout: true)
+//
+//                     sh "docker run ${PROJECT_NAME}:${GIT_HASH}"
 //
 //                     // build cypress container
 //                     sh """
@@ -121,25 +120,25 @@ node {
 //                         parallel parallelStagesMap
 //                     }
 //                     postBuildStatusToGithub("success", "The build has passed!");
-                }
-                catch (error) {
-                    postBuildStatusToGithub("failure", "The build has failed!");
-                    throw error
-                }
-                finally {
-                    0.upto(4, {
-                        sh "docker rm --force ${PROJECT_BUILD_NAME}-cypress-${it}"
-                    })
-
-                    sh "docker rmi ${PROJECT_NAME}:${GIT_HASH}"
-                    sh "docker rmi ${PROJECT_BUILD_NAME}-cypress:${GIT_HASH}"
-                }
-            }
-        }
-    }
-    catch (error) {
-        // throw error // non-blocking but should still show a failed stage
-    }
+//                 }
+//                 catch (error) {
+//                     postBuildStatusToGithub("failure", "The build has failed!");
+//                     throw error
+//                 }
+//                 finally {
+//                     0.upto(4, {
+//                         sh "docker rm --force ${PROJECT_BUILD_NAME}-cypress-${it}"
+//                     })
+//
+//                     sh "docker rmi ${PROJECT_NAME}:${GIT_HASH}"
+//                     sh "docker rmi ${PROJECT_BUILD_NAME}-cypress:${GIT_HASH}"
+//                 }
+//             }
+//         }
+//     }
+//     catch (error) {
+//         // throw error // non-blocking but should still show a failed stage
+//     }
 }
 
 def postBuildStatusToGithub(state, description) {
