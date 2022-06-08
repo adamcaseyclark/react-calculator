@@ -70,7 +70,7 @@ node {
 
                     sh """
                         GIT_HASH=${GIT_HASH} PORT_FOR_CALCULATOR="${portForCalculator}" \
-                        docker-compose -f docker/cypress-test.yml -p ${BUILD_PREFIX} up -d
+                        docker-compose -f docker/cypress-test.yml -p ${PROJECT_NAME}:${GIT_HASH} up -d
                     """
 
                     // build cypress container
