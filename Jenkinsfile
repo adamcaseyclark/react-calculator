@@ -69,9 +69,13 @@ node {
                     // sh(script: 'docker rmi $(docker ps -aq)', returnStdout: true)
 
                     sh """
-                        GIT_HASH=${GIT_HASH} PORT_FOR_CALCULATOR="${portForCalculator}" \
-                        docker-compose -f docker/cypress-test.yml -p ${PROJECT_NAME}:${GIT_HASH} up -d
+                        sh "docker run ${PROJECT_NAME}:${GIT_HASH} start"
                     """
+
+//                     sh """
+//                         GIT_HASH=${GIT_HASH} PORT_FOR_CALCULATOR="${portForCalculator}" \
+//                         docker-compose -f docker/cypress-test.yml -p ${PROJECT_NAME}:${GIT_HASH} up -d
+//                     """
 
                     // build cypress container
                     sh """
@@ -129,9 +133,7 @@ node {
                         sh "docker rm --force ${PROJECT_BUILD_NAME}-cypress-${it}"
                     })
 
-                    sh """
-                    docker-compose -f docker/cypress-test.yml -p ${PROJECT_NAME}:${GIT_HASH} down -v
-                    """
+                    sh "docker rmi ${PROJECT_NAME}:${GIT_HASH}"
                     sh "docker rmi ${PROJECT_BUILD_NAME}-cypress:${GIT_HASH}"
                 }
             }
