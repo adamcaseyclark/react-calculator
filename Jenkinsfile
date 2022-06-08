@@ -64,63 +64,63 @@ node {
                     BUILD_PREFIX = "${PROJECT_NAME}-${GIT_HASH}"
                     PROJECT_BUILD_NAME = "${PROJECT_NAME}-${BUILD_NUMBER}"
 
-                    // sh(script: 'docker stop $(docker ps -aq)', returnStdout: true)
-                    // sh(script: 'docker rm $(docker ps -aq)', returnStdout: true)
-                    // sh(script: 'docker rmi $(docker ps -aq)', returnStdout: true)
+                    sh(script: 'docker stop $(docker ps -aq)', returnStdout: true)
+                    sh(script: 'docker rm $(docker ps -aq)', returnStdout: true)
+                    sh(script: 'docker rmi $(docker ps -aq)', returnStdout: true)
 
-                    sh "docker run ${PROJECT_NAME}:${GIT_HASH}"
-
+//                     sh "docker run ${PROJECT_NAME}:${GIT_HASH}"
+//
+// //                     sh """
+// //                         GIT_HASH=${GIT_HASH} PORT_FOR_CALCULATOR="${portForCalculator}" \
+// //                         docker-compose -f docker/cypress-test.yml -p ${PROJECT_NAME}:${GIT_HASH} up -d
+// //                     """
+//
+//                     // build cypress container
 //                     sh """
-//                         GIT_HASH=${GIT_HASH} PORT_FOR_CALCULATOR="${portForCalculator}" \
-//                         docker-compose -f docker/cypress-test.yml -p ${PROJECT_NAME}:${GIT_HASH} up -d
+//                     docker build -f docker/CypressDockerfile -t ${PROJECT_BUILD_NAME}-cypress:${GIT_HASH} \
+//                         --build-arg PROJECT_NAME=${PROJECT_NAME} \
+//                         --build-arg GIT_HASH=${GIT_HASH} \
+//                         --force-rm=true \
+//                         --no-cache=true \
+//                         .
 //                     """
-
-                    // build cypress container
-                    sh """
-                    docker build -f docker/CypressDockerfile -t ${PROJECT_BUILD_NAME}-cypress:${GIT_HASH} \
-                        --build-arg PROJECT_NAME=${PROJECT_NAME} \
-                        --build-arg GIT_HASH=${GIT_HASH} \
-                        --force-rm=true \
-                        --no-cache=true \
-                        .
-                    """
-
-                    timeout(3) {
-                        waitUntil {
-                            script {
-                                def localhost3000IsNowRunning = sh(
-                                    script: "wget -q http://localhost:3000 -O /dev/null",
-                                    returnStatus: true
-                                )
-                                return (localhost3000IsNowRunning == 0);
-                            }
-                        }
-                    }
-
-                    // run cypress tests in parallel
-                    sh 'cd code && find ./cypress/integration/ -name "*.spec.js" > ../listOfFiles'
-                    def testFiles = readFile("listOfFiles").split().toList();
-                    sh 'rm listOfFiles'
-                    def testFileSplitCount = testFiles.size().intdiv(5) + 1;
-                    def testFilesArray = testFiles.collate(testFileSplitCount);
-                    def parallelStagesMap = testFilesArray.collectEntries {
-                        ["UI Test ${testFilesArray.indexOf(it)}" : {
-                            node("${env.NODE_NAME}") {
-                                timeout(time: 5, activity: true, unit: 'MINUTES') {
-                                    sh """
-                                        docker run \
-                                            --env CYPRESS_RUNNING_IN_DOCKER=true \
-                                            --name ${PROJECT_BUILD_NAME}-cypress-${testFilesArray.indexOf(it)} \
-                                            ${PROJECT_BUILD_NAME}-cypress:${GIT_HASH} run --spec '${it.join(',')}'
-                                    """
-                                }
-                            }
-                        }]
-                    }
-                    script {
-                        parallel parallelStagesMap
-                    }
-                    postBuildStatusToGithub("success", "The build has passed!");
+//
+//                     timeout(3) {
+//                         waitUntil {
+//                             script {
+//                                 def localhost3000IsNowRunning = sh(
+//                                     script: "wget -q http://localhost:3000 -O /dev/null",
+//                                     returnStatus: true
+//                                 )
+//                                 return (localhost3000IsNowRunning == 0);
+//                             }
+//                         }
+//                     }
+//
+//                     // run cypress tests in parallel
+//                     sh 'cd code && find ./cypress/integration/ -name "*.spec.js" > ../listOfFiles'
+//                     def testFiles = readFile("listOfFiles").split().toList();
+//                     sh 'rm listOfFiles'
+//                     def testFileSplitCount = testFiles.size().intdiv(5) + 1;
+//                     def testFilesArray = testFiles.collate(testFileSplitCount);
+//                     def parallelStagesMap = testFilesArray.collectEntries {
+//                         ["UI Test ${testFilesArray.indexOf(it)}" : {
+//                             node("${env.NODE_NAME}") {
+//                                 timeout(time: 5, activity: true, unit: 'MINUTES') {
+//                                     sh """
+//                                         docker run \
+//                                             --env CYPRESS_RUNNING_IN_DOCKER=true \
+//                                             --name ${PROJECT_BUILD_NAME}-cypress-${testFilesArray.indexOf(it)} \
+//                                             ${PROJECT_BUILD_NAME}-cypress:${GIT_HASH} run --spec '${it.join(',')}'
+//                                     """
+//                                 }
+//                             }
+//                         }]
+//                     }
+//                     script {
+//                         parallel parallelStagesMap
+//                     }
+//                     postBuildStatusToGithub("success", "The build has passed!");
                 }
                 catch (error) {
                     postBuildStatusToGithub("failure", "The build has failed!");
