@@ -69,7 +69,7 @@ node {
                     // sh(script: 'docker rmi $(docker ps -aq)', returnStdout: true)
 
                     sh """
-                        sh "docker run ${PROJECT_NAME}:${GIT_HASH} start"
+                        sh "docker run ${PROJECT_NAME}:${GIT_HASH}"
                     """
 
 //                     sh """
