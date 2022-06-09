@@ -1,5 +1,5 @@
 {
-  "baseUrl": "http://172.17.0.2:3000",
+  "baseUrl": "http://localhost:3000",
   "watchForFileChanges": false,
   "screenshotOnRunFailure": false,
   "video": false,

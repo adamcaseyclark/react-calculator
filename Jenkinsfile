@@ -68,9 +68,13 @@ node {
                     portForCalculator = Math.abs(random.nextInt(65535 - 49152) + 1) + 49152
 
                     BUILD_PREFIX = "${PROJECT_NAME}-${GIT_HASH}"
-                    PROJECT_BUILD_NAME = "${PROJECT_NAME}-${BUILD_NUMBER}"
 
-                    sh "docker run -d ${PROJECT_NAME}:${GIT_HASH}"
+                    sh """
+                        GIT_HASH=${GIT_HASH} PORT_FOR_CALCULATOR=${portForCalculator} \
+                        docker-compose -f docker/cypress-test.yml -p ${BUILD_PREFIX} up -d
+                    """
+
+                    PROJECT_BUILD_NAME = "${PROJECT_NAME}-${BUILD_NUMBER}"
 
                     sh """
                     docker build -f docker/CypressDockerfile -t ${PROJECT_BUILD_NAME}-cypress:${GIT_HASH} \
@@ -85,7 +89,7 @@ node {
 //                         waitUntil {
 //                             script {
 //                                 def localhost3000IsNowRunning = sh(
-//                                     script: "wget -q http://localhost:3000 -O /dev/null",
+//                                     script: "wget -q http://localhost:${portForCalculator} -O /dev/null",
 //                                     returnStatus: true
 //                                 )
 //                                 return (localhost3000IsNowRunning == 0);
