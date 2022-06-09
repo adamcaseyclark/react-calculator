@@ -97,6 +97,7 @@ node {
                     def testFiles = readFile("listOfFiles").split().toList();
                     sh 'rm listOfFiles'
                     def testFileSplitCount = testFiles.size().intdiv(5) + 1;
+                    sh 'echo TEST_FILE_SPLIT_COUNT is ${testFileSplitCount}'
                     def testFilesArray = testFiles.collate(testFileSplitCount);
                     def parallelStagesMap = testFilesArray.collectEntries {
                         ["UI Test ${testFilesArray.indexOf(it)}" : {
