@@ -33,7 +33,7 @@ node {
         sh "echo BRANCH_NAME is: ${BRANCH_NAME}"
         sh "echo BUILD_NUMBER is: ${BUILD_NUMBER}"
 
-        RESPONSE =  sh(script: 'docker system prune', returnStdout: true)
+        RESPONSE =  sh(script: 'docker system prune -af', returnStdout: true)
         sh "echo RESPONSE is ${RESPONSE}"
 
         // sh(script: 'docker stop $(docker ps -aq)', returnStdout: true)
