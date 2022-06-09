@@ -38,7 +38,7 @@ node {
         // sh(script: 'docker rm $(docker ps -aq)', returnStdout: true)
         // sh(script: 'docker rmi $(docker ps -aq)', returnStdout: true)
 
-//         postBuildStatusToGithub("pending", "The build is pending!");
+        postBuildStatusToGithub("pending", "The build is pending!");
     }
 
 //     stage('Build') {
