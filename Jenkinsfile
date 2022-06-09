@@ -5,16 +5,6 @@ BRANCH_NAME="master"
 GIT_HASH=""
 
 node {
-//     stage('Clean Up Previous Work') {
-//
-//         sh(script: 'docker ps -aq', returnStdout: true)
-//         sh(script: 'docker system prune -af', returnStdout: true)
-//
-//         // sh(script: 'docker stop $(docker ps -aq)', returnStdout: true)
-//         // sh(script: 'docker rm $(docker ps -aq)', returnStdout: true)
-//         // sh(script: 'docker rmi $(docker ps -aq)', returnStdout: true)
-//     }
-
     stage('Git') {
         checkout([
             $class: 'GitSCM',
@@ -42,6 +32,12 @@ node {
         sh "echo PROJECT_NAME is: ${PROJECT_NAME}"
         sh "echo BRANCH_NAME is: ${BRANCH_NAME}"
         sh "echo BUILD_NUMBER is: ${BUILD_NUMBER}"
+
+        // sh(script: 'docker ps -aq', returnStdout: true)
+        // sh(script: 'docker system prune -af', returnStdout: true)
+        // sh(script: 'docker stop $(docker ps -aq)', returnStdout: true)
+        // sh(script: 'docker rm $(docker ps -aq)', returnStdout: true)
+        // sh(script: 'docker rmi $(docker ps -aq)', returnStdout: true)
 
         postBuildStatusToGithub("pending", "The build is pending!");
     }
@@ -76,7 +72,6 @@ node {
 
                     sh "docker run -d ${PROJECT_NAME}:${GIT_HASH}"
 
-                    // build cypress container
                     sh """
                     docker build -f docker/CypressDockerfile -t ${PROJECT_BUILD_NAME}-cypress:${GIT_HASH} \
                         --build-arg PROJECT_NAME=${PROJECT_NAME} \
@@ -86,19 +81,18 @@ node {
                         .
                     """
 
-                    timeout(3) {
-                        waitUntil {
-                            script {
-                                def localhost3000IsNowRunning = sh(
-                                    script: "wget -q http://localhost:3000 -O /dev/null",
-                                    returnStatus: true
-                                )
-                                return (localhost3000IsNowRunning == 0);
-                            }
-                        }
-                    }
+//                     timeout(3) {
+//                         waitUntil {
+//                             script {
+//                                 def localhost3000IsNowRunning = sh(
+//                                     script: "wget -q http://localhost:3000 -O /dev/null",
+//                                     returnStatus: true
+//                                 )
+//                                 return (localhost3000IsNowRunning == 0);
+//                             }
+//                         }
+//                     }
 
-                    // run cypress tests in parallel
                     sh 'cd code && find ./cypress/integration/ -name "*.spec.js" > ../listOfFiles'
                     def testFiles = readFile("listOfFiles").split().toList();
                     sh 'rm listOfFiles'
