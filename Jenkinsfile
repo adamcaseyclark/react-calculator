@@ -74,7 +74,7 @@ node {
                     BUILD_PREFIX = "${PROJECT_NAME}-${GIT_HASH}"
                     PROJECT_BUILD_NAME = "${PROJECT_NAME}-${BUILD_NUMBER}"
 
-                    sh "docker run ${PROJECT_NAME}:${GIT_HASH}"
+                    sh "docker run -d ${PROJECT_NAME}:${GIT_HASH}"
 
                     // build cypress container
                     sh """
