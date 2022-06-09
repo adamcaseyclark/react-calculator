@@ -33,12 +33,14 @@ node {
         sh "echo BRANCH_NAME is: ${BRANCH_NAME}"
         sh "echo BUILD_NUMBER is: ${BUILD_NUMBER}"
 
-        sh(script: 'docker system prune', returnStdout: true)
+        RESPONSE =  sh(script: 'docker system prune', returnStdout: true)
+        sh "echo RESPONSE is ${RESPONSE}"
+
         // sh(script: 'docker stop $(docker ps -aq)', returnStdout: true)
         // sh(script: 'docker rm $(docker ps -aq)', returnStdout: true)
         // sh(script: 'docker rmi $(docker ps -aq)', returnStdout: true)
-
         postBuildStatusToGithub("pending", "The build is pending!");
+
     }
 
 //     stage('Build') {
