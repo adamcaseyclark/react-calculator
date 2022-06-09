@@ -5,6 +5,19 @@ BRANCH_NAME="master"
 GIT_HASH=""
 
 node {
+    stage('Clean Up Previous Work') {
+
+        ALL_CONTAINERS = sh(script: 'docker ps -aq', returnStdout: true)
+        RESPONSE =  sh(script: 'docker system prune -af', returnStdout: true)
+
+        sh "echo ALL_CONTAINERS is ${ALL_CONTAINERS}"
+        sh "echo RESPONSE is ${RESPONSE}"
+
+        // sh(script: 'docker stop $(docker ps -aq)', returnStdout: true)
+        // sh(script: 'docker rm $(docker ps -aq)', returnStdout: true)
+        // sh(script: 'docker rmi $(docker ps -aq)', returnStdout: true)
+    }
+
     stage('Git') {
         checkout([
             $class: 'GitSCM',
@@ -33,13 +46,7 @@ node {
         sh "echo BRANCH_NAME is: ${BRANCH_NAME}"
         sh "echo BUILD_NUMBER is: ${BUILD_NUMBER}"
 
-        // RESPONSE =  sh(script: 'docker system prune -af', returnStdout: true)
-        // sh "echo RESPONSE is ${RESPONSE}"
-        // sh(script: 'docker stop $(docker ps -aq)', returnStdout: true)
-        // sh(script: 'docker rm $(docker ps -aq)', returnStdout: true)
-        // sh(script: 'docker rmi $(docker ps -aq)', returnStdout: true)
         postBuildStatusToGithub("pending", "The build is pending!");
-
     }
 
     stage('Build') {
