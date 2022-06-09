@@ -33,168 +33,113 @@ node {
         sh "echo BRANCH_NAME is: ${BRANCH_NAME}"
         sh "echo BUILD_NUMBER is: ${BUILD_NUMBER}"
 
-        // postBuildStatusToGithub("pending", "The build is pending!");
-
-        sh(script: 'docker system prune', returnStdout: true)
-
-//         sh(script: 'docker stop 907ccb5b3241', returnStdout: true)
-//         sh(script: 'docker rm 907ccb5b3241', returnStdout: true)
-//
-//         sh(script: 'docker stop cab2ebe16df7', returnStdout: true)
-//         sh(script: 'docker rm cab2ebe16df7', returnStdout: true)
-//
-//         sh(script: 'docker stop eae92e4a0a2c', returnStdout: true)
-//         sh(script: 'docker rm eae92e4a0a2c', returnStdout: true)
-//
-//         sh(script: 'docker stop 07da4567e2e4', returnStdout: true)
-//         sh(script: 'docker rm 07da4567e2e4', returnStdout: true)
-//
-//         sh(script: 'docker stop 2cdd3c2435fe', returnStdout: true)
-//         sh(script: 'docker rm 2cdd3c2435fe', returnStdout: true)
-//
-//         sh(script: 'docker stop 6b518c13a941', returnStdout: true)
-//         sh(script: 'docker rm 6b518c13a941', returnStdout: true)
-//
-//         sh(script: 'docker stop bf6bea599498', returnStdout: true)
-//         sh(script: 'docker rm bf6bea599498', returnStdout: true)
-//
-//         sh(script: 'docker stop 4cc0b41cf061', returnStdout: true)
-//         sh(script: 'docker rm 4cc0b41cf061', returnStdout: true)
-//
-//         sh(script: 'docker stop 1b96ea4ca4db', returnStdout: true)
-//         sh(script: 'docker rm 1b96ea4ca4db', returnStdout: true)
-//
-//         sh(script: 'docker stop 2366dc17dafe', returnStdout: true)
-//         sh(script: 'docker rm 2366dc17dafe', returnStdout: true)
-//
-//         sh(script: 'docker stop 7f043bb4dcd2', returnStdout: true)
-//         sh(script: 'docker rm 7f043bb4dcd2', returnStdout: true)
-//
-//         sh(script: 'docker stop 2c3fb71f984e', returnStdout: true)
-//         sh(script: 'docker rm 2c3fb71f984e', returnStdout: true)
-//
-//         sh(script: 'docker stop 9d01ff8206e6', returnStdout: true)
-//         sh(script: 'docker rm 9d01ff8206e6', returnStdout: true)
-//
-//         sh(script: 'docker stop 4722c6ab8cd6', returnStdout: true)
-//         sh(script: 'docker rm 4722c6ab8cd6', returnStdout: true)
-//
-//         sh(script: 'docker stop 8c879f0e4c16', returnStdout: true)
-//         sh(script: 'docker rm 8c879f0e4c16', returnStdout: true)
-//
-//         sh(script: 'docker stop 38c19ab126d2', returnStdout: true)
-//         sh(script: 'docker rm 38c19ab126d2', returnStdout: true)
-//
-//         sh(script: 'docker stop 80e838917130', returnStdout: true)
-//         sh(script: 'docker rm 80e838917130', returnStdout: true)
-//
-//         sh(script: 'docker stop 57994fe16dd7', returnStdout: true)
-//         sh(script: 'docker rm 57994fe16dd7', returnStdout: true)
-
+        // sh(script: 'docker system prune', returnStdout: true)
         // sh(script: 'docker stop $(docker ps -aq)', returnStdout: true)
         // sh(script: 'docker rm $(docker ps -aq)', returnStdout: true)
         // sh(script: 'docker rmi $(docker ps -aq)', returnStdout: true)
+
+        postBuildStatusToGithub("pending", "The build is pending!");
     }
 
-//     stage('Build') {
-//         sh "docker build -f docker/Dockerfile -t ${PROJECT_NAME}:${GIT_HASH} --build-arg BUILD_DATE=\"${BUILD_DATE}\" --build-arg GIT_HASH=${GIT_HASH} --force-rm=true --no-cache=true --pull=true --rm=true ."
-//     }
-//
-//     stage('Test') {
-//         timestamps {
-//             try {
-//                 sh('echo SKIPPING TEST BLOCK CURRENTLY.....')
-//                 // sh "docker run ${PROJECT_NAME}:${GIT_HASH} test --offline"
-//                 // postBuildStatusToGithub("success", "The build has passed!");
-//             }
-//             catch (error) {
-//                 postBuildStatusToGithub("failure", "The build has failed!");
-//                 throw error
-//             }
-//         }
-//     }
-//
-//     try {
-//         stage('UI Tests') {
-//             timestamps {
-//                 try {
-//                     random = new Random()
-//                     portForCalculator = Math.abs(random.nextInt(65535 - 49152) + 1) + 49152
-//
-//                     BUILD_PREFIX = "${PROJECT_NAME}-${GIT_HASH}"
-//                     PROJECT_BUILD_NAME = "${PROJECT_NAME}-${BUILD_NUMBER}"
-//
-//                     sh(script: 'docker stop $(docker ps -aq)', returnStdout: true)
-//                     sh(script: 'docker rm $(docker ps -aq)', returnStdout: true)
-//                     sh(script: 'docker rmi $(docker ps -aq)', returnStdout: true)
-//
-//                     sh "docker run ${PROJECT_NAME}:${GIT_HASH}"
-//
-//                     // build cypress container
-//                     sh """
-//                     docker build -f docker/CypressDockerfile -t ${PROJECT_BUILD_NAME}-cypress:${GIT_HASH} \
-//                         --build-arg PROJECT_NAME=${PROJECT_NAME} \
-//                         --build-arg GIT_HASH=${GIT_HASH} \
-//                         --force-rm=true \
-//                         --no-cache=true \
-//                         .
-//                     """
-//
-//                     timeout(3) {
-//                         waitUntil {
-//                             script {
-//                                 def localhost3000IsNowRunning = sh(
-//                                     script: "wget -q http://localhost:3000 -O /dev/null",
-//                                     returnStatus: true
-//                                 )
-//                                 return (localhost3000IsNowRunning == 0);
-//                             }
-//                         }
-//                     }
-//
-//                     // run cypress tests in parallel
-//                     sh 'cd code && find ./cypress/integration/ -name "*.spec.js" > ../listOfFiles'
-//                     def testFiles = readFile("listOfFiles").split().toList();
-//                     sh 'rm listOfFiles'
-//                     def testFileSplitCount = testFiles.size().intdiv(5) + 1;
-//                     def testFilesArray = testFiles.collate(testFileSplitCount);
-//                     def parallelStagesMap = testFilesArray.collectEntries {
-//                         ["UI Test ${testFilesArray.indexOf(it)}" : {
-//                             node("${env.NODE_NAME}") {
-//                                 timeout(time: 5, activity: true, unit: 'MINUTES') {
-//                                     sh """
-//                                         docker run \
-//                                             --env CYPRESS_RUNNING_IN_DOCKER=true \
-//                                             --name ${PROJECT_BUILD_NAME}-cypress-${testFilesArray.indexOf(it)} \
-//                                             ${PROJECT_BUILD_NAME}-cypress:${GIT_HASH} run --spec '${it.join(',')}'
-//                                     """
-//                                 }
-//                             }
-//                         }]
-//                     }
-//                     script {
-//                         parallel parallelStagesMap
-//                     }
-//                     postBuildStatusToGithub("success", "The build has passed!");
-//                 }
-//                 catch (error) {
-//                     postBuildStatusToGithub("failure", "The build has failed!");
-//                     throw error
-//                 }
-//                 finally {
-//                     0.upto(4, {
-//                         sh "docker rm --force ${PROJECT_BUILD_NAME}-cypress-${it}"
-//                     })
-//
-//                     sh "docker rmi ${PROJECT_NAME}:${GIT_HASH}"
-//                     sh "docker rmi ${PROJECT_BUILD_NAME}-cypress:${GIT_HASH}"
-//                 }
-//             }
-//         }
-//     }
-//     catch (error) {
-//         // throw error // non-blocking but should still show a failed stage
-//     }
+    stage('Build') {
+        sh "docker build -f docker/Dockerfile -t ${PROJECT_NAME}:${GIT_HASH} --build-arg BUILD_DATE=\"${BUILD_DATE}\" --build-arg GIT_HASH=${GIT_HASH} --force-rm=true --no-cache=true --pull=true --rm=true ."
+    }
+
+    stage('Test') {
+        timestamps {
+            try {
+                sh('echo SKIPPING TEST BLOCK CURRENTLY.....')
+                // sh "docker run ${PROJECT_NAME}:${GIT_HASH} test --offline"
+                // postBuildStatusToGithub("success", "The build has passed!");
+            }
+            catch (error) {
+                postBuildStatusToGithub("failure", "The build has failed!");
+                throw error
+            }
+        }
+    }
+
+    try {
+        stage('UI Tests') {
+            timestamps {
+                try {
+                    random = new Random()
+                    portForCalculator = Math.abs(random.nextInt(65535 - 49152) + 1) + 49152
+
+                    BUILD_PREFIX = "${PROJECT_NAME}-${GIT_HASH}"
+                    PROJECT_BUILD_NAME = "${PROJECT_NAME}-${BUILD_NUMBER}"
+
+                    sh(script: 'docker stop $(docker ps -aq)', returnStdout: true)
+                    sh(script: 'docker rm $(docker ps -aq)', returnStdout: true)
+                    sh(script: 'docker rmi $(docker ps -aq)', returnStdout: true)
+
+                    sh "docker run ${PROJECT_NAME}:${GIT_HASH}"
+
+                    // build cypress container
+                    sh """
+                    docker build -f docker/CypressDockerfile -t ${PROJECT_BUILD_NAME}-cypress:${GIT_HASH} \
+                        --build-arg PROJECT_NAME=${PROJECT_NAME} \
+                        --build-arg GIT_HASH=${GIT_HASH} \
+                        --force-rm=true \
+                        --no-cache=true \
+                        .
+                    """
+
+                    timeout(3) {
+                        waitUntil {
+                            script {
+                                def localhost3000IsNowRunning = sh(
+                                    script: "wget -q http://localhost:3000 -O /dev/null",
+                                    returnStatus: true
+                                )
+                                return (localhost3000IsNowRunning == 0);
+                            }
+                        }
+                    }
+
+                    // run cypress tests in parallel
+                    sh 'cd code && find ./cypress/integration/ -name "*.spec.js" > ../listOfFiles'
+                    def testFiles = readFile("listOfFiles").split().toList();
+                    sh 'rm listOfFiles'
+                    def testFileSplitCount = testFiles.size().intdiv(5) + 1;
+                    def testFilesArray = testFiles.collate(testFileSplitCount);
+                    def parallelStagesMap = testFilesArray.collectEntries {
+                        ["UI Test ${testFilesArray.indexOf(it)}" : {
+                            node("${env.NODE_NAME}") {
+                                timeout(time: 5, activity: true, unit: 'MINUTES') {
+                                    sh """
+                                        docker run \
+                                            --env CYPRESS_RUNNING_IN_DOCKER=true \
+                                            --name ${PROJECT_BUILD_NAME}-cypress-${testFilesArray.indexOf(it)} \
+                                            ${PROJECT_BUILD_NAME}-cypress:${GIT_HASH} run --spec '${it.join(',')}'
+                                    """
+                                }
+                            }
+                        }]
+                    }
+                    script {
+                        parallel parallelStagesMap
+                    }
+                    postBuildStatusToGithub("success", "The build has passed!");
+                }
+                catch (error) {
+                    postBuildStatusToGithub("failure", "The build has failed!");
+                    throw error
+                }
+                finally {
+                    0.upto(4, {
+                        sh "docker rm --force ${PROJECT_BUILD_NAME}-cypress-${it}"
+                    })
+
+                    sh "docker rmi ${PROJECT_NAME}:${GIT_HASH}"
+                    sh "docker rmi ${PROJECT_BUILD_NAME}-cypress:${GIT_HASH}"
+                }
+            }
+        }
+    }
+    catch (error) {
+        // throw error // non-blocking but should still show a failed stage
+    }
 }
 
 def postBuildStatusToGithub(state, description) {
