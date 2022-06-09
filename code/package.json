@@ -36,7 +36,6 @@
     "babel-register": "^6.26.0",
     "eslint": "^8.14.0",
     "eslint-plugin-cypress": "^2.12.1",
-    "graceful-fs": "^4.2.10",
     "jest": "^28.1.0",
     "prettier": "^2.6.2"
   },
