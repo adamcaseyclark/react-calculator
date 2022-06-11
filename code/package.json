@@ -6,6 +6,7 @@
   "scripts": {
     "start": "react-scripts start",
     "cypress:ci": "npx cypress run",
+    "cypress:test:ui": "cypress run --headed -s \"cypress/integration/**\"",
     "cypress:test": "cypress run -s \"cypress/integration/**\"",
     "test": "npm run lint && node test.js",
     "unit:test": "jest src/helpers/test/**",

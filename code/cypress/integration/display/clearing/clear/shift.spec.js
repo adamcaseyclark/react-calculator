@@ -14,12 +14,12 @@ describe("Clearing Data From Calculator (AC)", () => {
 
   it("Selecting All Clear (C) Will NOT Reset Shifted Layout", () => {
     cy.get(LocatorConstants.SHIFT_KEY).then(($shiftKeyBeforeSelecting) => {
-      cy.wrap($shiftKeyBeforeSelecting).should("have.text", "2nd");
+      cy.wrap($shiftKeyBeforeSelecting).should("have.text", "2ⁿᵈ");
       cy.get(LocatorConstants.SHIFT_KEY_NOT_SELECTED).should("exist");
 
       cy.get(LocatorConstants.SHIFT_KEY).click();
       cy.get(LocatorConstants.SHIFT_KEY).then(($shiftKeyAfterSelecting) => {
-        cy.wrap($shiftKeyAfterSelecting).should("have.text", "2nd");
+        cy.wrap($shiftKeyAfterSelecting).should("have.text", "2ⁿᵈ");
         cy.get(LocatorConstants.SHIFT_KEY_WHEN_SELECTED).should("exist");
 
         // ADDING DATA TO DISPLAY TO VERIFY IT CLEARS BUT SHIFT REMAINS
@@ -57,7 +57,7 @@ describe("Clearing Data From Calculator (AC)", () => {
                 // );
                 cy.get(LocatorConstants.SHIFT_KEY).then(
                   ($shiftKeyAfterAllClear) => {
-                    cy.wrap($shiftKeyAfterAllClear).should("have.text", "2nd");
+                    cy.wrap($shiftKeyAfterAllClear).should("have.text", "2ⁿᵈ");
                     cy.get(LocatorConstants.SHIFT_KEY_WHEN_SELECTED).should(
                       "exist"
                     );

@@ -10,7 +10,7 @@ describe("Trigonometric Function Keys - Hyperbole Inverse Cosine In Radians", ()
 
         cy.get(LocatorConstants.SHIFT_KEY).click();
         cy.get(LocatorConstants.SHIFT_KEY).then(($shiftKeyAfterSelecting) => {
-          cy.wrap($shiftKeyAfterSelecting).should("have.text", "2nd");
+          cy.wrap($shiftKeyAfterSelecting).should("have.text", "2ⁿᵈ");
           cy.get(LocatorConstants.SHIFT_KEY_WHEN_SELECTED).should("exist");
         });
 

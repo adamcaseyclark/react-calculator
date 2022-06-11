@@ -13,7 +13,7 @@ describe("log 2 Key on Calculator", () => {
           ($shiftKeyAfterKeyHasBeenSelected) => {
             cy.wrap($shiftKeyAfterKeyHasBeenSelected).should(
               "have.text",
-              "2nd"
+              "2ⁿᵈ"
             );
             cy.get(LocatorConstants.SHIFT_KEY_WHEN_SELECTED).should("exist");
           }

@@ -9,7 +9,7 @@ describe("User Given Information (Two Step) For Exponent (y^x) - Clearing After 
       cy.get(LocatorConstants.SHIFT_KEY).click();
       cy.get(LocatorConstants.SHIFT_KEY).then(
         ($shiftKeyAfterKeyHasBeenSelected) => {
-          cy.wrap($shiftKeyAfterKeyHasBeenSelected).should("have.text", "2nd");
+          cy.wrap($shiftKeyAfterKeyHasBeenSelected).should("have.text", "2ⁿᵈ");
           cy.get(LocatorConstants.SHIFT_KEY_WHEN_SELECTED).should("exist");
         }
       );

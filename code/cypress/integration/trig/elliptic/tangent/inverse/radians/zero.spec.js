@@ -9,7 +9,7 @@ describe("Trigonometric Function Keys - Tangent In Radians", () => {
         cy.wrap($clearKeyDisplayedText).should("have.text", "AC");
         cy.get(LocatorConstants.SHIFT_KEY).click();
         cy.get(LocatorConstants.SHIFT_KEY).then(($shiftKeyAfterSelecting) => {
-          cy.wrap($shiftKeyAfterSelecting).should("have.text", "2nd");
+          cy.wrap($shiftKeyAfterSelecting).should("have.text", "2ⁿᵈ");
           cy.get(LocatorConstants.SHIFT_KEY_WHEN_SELECTED).should("exist");
 
           cy.get(LocatorConstants.MEASUREMENT_DISPLAY).then(

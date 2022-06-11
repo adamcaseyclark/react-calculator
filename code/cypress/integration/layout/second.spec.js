@@ -17,7 +17,7 @@ describe("Standard Keyboard Layout Verification", () => {
   it("Second Row Of Standard Keyboard - 10 Keys", () => {
     cy.get(LocatorConstants.ALL_KEYS).then(($keys) => {
       cy.wrap($keys).each(($key, $index) => {
-        if ($index === 10) cy.wrap($key).should("have.text", "2nd");
+        if ($index === 10) cy.wrap($key).should("have.text", "2ⁿᵈ");
         if ($index === 11)
           cy.wrap($key).should("have.text", ExponentsConstants.SQUARED);
         if ($index === 12)

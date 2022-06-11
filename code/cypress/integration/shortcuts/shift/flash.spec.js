@@ -18,7 +18,7 @@ describe("Shifted View Keyboard Layout Verification", () => {
       ($shiftKeyBeforeShiftKeyboardKeyHasBeenPressed) => {
         cy.wrap($shiftKeyBeforeShiftKeyboardKeyHasBeenPressed).should(
           "have.text",
-          "2nd"
+          "2ⁿᵈ"
         );
         cy.get(LocatorConstants.SHIFT_KEY_NOT_SELECTED).should("exist");
       }
@@ -29,7 +29,7 @@ describe("Shifted View Keyboard Layout Verification", () => {
       ($shiftKeyBeforeShiftKeyboardKeyHasBeenPressed) => {
         cy.wrap($shiftKeyBeforeShiftKeyboardKeyHasBeenPressed).should(
           "have.text",
-          "2nd"
+          "2ⁿᵈ"
         );
         cy.get(LocatorConstants.SHIFT_KEY_WHEN_SELECTED).should("exist");
       }

@@ -11,7 +11,7 @@ describe("Clearing Data From Calculator (AC)", () => {
 
         cy.get(LocatorConstants.SHIFT_KEY).click();
         cy.get(LocatorConstants.SHIFT_KEY).then(($shiftKeyAfterSelecting) => {
-          cy.wrap($shiftKeyAfterSelecting).should("have.text", "2nd");
+          cy.wrap($shiftKeyAfterSelecting).should("have.text", "2ⁿᵈ");
           cy.get(LocatorConstants.SHIFT_KEY_WHEN_SELECTED).should("exist");
 
           // ADDING DATA TO DISPLAY TO VERIFY IT CLEARS BUT SHIFT REMAINS
@@ -40,7 +40,7 @@ describe("Clearing Data From Calculator (AC)", () => {
                     ($shiftKeyAfterAllClear) => {
                       cy.wrap($shiftKeyAfterAllClear).should(
                         "have.text",
-                        "2nd"
+                        "2ⁿᵈ"
                       );
                       cy.get(LocatorConstants.SHIFT_KEY_WHEN_SELECTED).should(
                         "exist"
@@ -66,7 +66,7 @@ describe("Clearing Data From Calculator (AC)", () => {
       ($displayAfterSelectingAllClear) => {
         cy.wrap($displayAfterSelectingAllClear).should("have.text", "0");
         cy.get(LocatorConstants.SHIFT_KEY).then(($shiftKeyAfterAllClear) => {
-          cy.wrap($shiftKeyAfterAllClear).should("have.text", "2nd");
+          cy.wrap($shiftKeyAfterAllClear).should("have.text", "2ⁿᵈ");
           cy.get(LocatorConstants.SHIFT_KEY_WHEN_SELECTED).should("exist");
         });
       }

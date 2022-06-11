@@ -13,7 +13,7 @@ describe("log 2 Key on Calculator - Three", () => {
           ($shiftKeyAfterKeyHasBeenSelected) => {
             cy.wrap($shiftKeyAfterKeyHasBeenSelected).should(
               "have.text",
-              "2nd"
+              "2ⁿᵈ"
             );
             cy.get(LocatorConstants.SHIFT_KEY_WHEN_SELECTED).should("exist");
           }
@@ -29,11 +29,11 @@ describe("log 2 Key on Calculator - Three", () => {
           ($log2KeyDisplayBeforeSelectingLog2) => {
             cy.wrap($shiftKeyBeforeLog2KeyHasBeenSelected).should(
               "have.text",
-              "2nd"
+              "2ⁿᵈ"
             );
             cy.wrap($log2KeyDisplayBeforeSelectingLog2).should(
               "have.text",
-              "log2"
+              "log₂"
             );
             cy.get(LocatorConstants.SHIFT_KEY_WHEN_SELECTED).should("exist");
             cy.get(LocatorConstants.BASE_TWO_LOGARITHM_KEY).click();
@@ -43,11 +43,11 @@ describe("log 2 Key on Calculator - Three", () => {
                   ($log2KeyDisplayAfterSelectingLog2) => {
                     cy.wrap($shiftKeyAfterLog2KeyHasBeenSelected).should(
                       "have.text",
-                      "2nd"
+                      "2ⁿᵈ"
                     );
                     cy.wrap($log2KeyDisplayAfterSelectingLog2).should(
                       "have.text",
-                      "log2"
+                      "log₂"
                     );
                     cy.get(LocatorConstants.SHIFT_KEY_WHEN_SELECTED).should(
                       "exist"

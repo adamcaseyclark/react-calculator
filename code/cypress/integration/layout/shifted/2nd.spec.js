@@ -15,7 +15,7 @@ describe("Shifted View Keyboard Layout Verification", () => {
           ($shiftKeyAfterKeyHasBeenSelected) => {
             cy.wrap($shiftKeyAfterKeyHasBeenSelected).should(
               "have.text",
-              "2nd"
+              "2ⁿᵈ"
             );
             cy.get(LocatorConstants.SHIFT_KEY_WHEN_SELECTED).should("exist");
           }
@@ -27,7 +27,7 @@ describe("Shifted View Keyboard Layout Verification", () => {
   it("Second Row Of Shifted View Keyboard - 10 Keys", () => {
     cy.get(LocatorConstants.ALL_KEYS).then(($keys) => {
       cy.wrap($keys).each(($key, $index) => {
-        if ($index === 10) cy.wrap($key).should("have.text", "2nd");
+        if ($index === 10) cy.wrap($key).should("have.text", "2ⁿᵈ");
         if ($index === 11)
           cy.wrap($key).should("have.text", ExponentsConstants.SQUARED);
         if ($index === 12)

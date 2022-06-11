@@ -17,7 +17,7 @@ describe("Shifted View Keyboard Layout Verification", () => {
           ($shiftKeyAfterKeyHasBeenSelected) => {
             cy.wrap($shiftKeyAfterKeyHasBeenSelected).should(
               "have.text",
-              "2nd"
+              "2ⁿᵈ"
             );
             cy.get(LocatorConstants.SHIFT_KEY_WHEN_SELECTED).should("exist");
           }

@@ -17,7 +17,7 @@ describe("Keyboard Shortcuts Of Calculator, Layout Does Not Shift", () => {
       ($shiftKeyBeforeShiftKeyboardKeyHasBeenPressed) => {
         cy.wrap($shiftKeyBeforeShiftKeyboardKeyHasBeenPressed).should(
           "have.text",
-          "2nd"
+          "2ⁿᵈ"
         );
         cy.get(LocatorConstants.SHIFT_KEY_NOT_SELECTED).should("exist");
       }
@@ -31,7 +31,7 @@ describe("Keyboard Shortcuts Of Calculator, Layout Does Not Shift", () => {
       ($shiftKeyAfterKeyboardShortcutIncludingShiftKeyHasBeenTyped) => {
         cy.wrap(
           $shiftKeyAfterKeyboardShortcutIncludingShiftKeyHasBeenTyped
-        ).should("have.text", "2nd");
+        ).should("have.text", "2ⁿᵈ");
         cy.get(LocatorConstants.SHIFT_KEY_NOT_SELECTED).should("exist");
       }
     );

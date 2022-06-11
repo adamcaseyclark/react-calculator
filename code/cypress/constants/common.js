@@ -3,5 +3,6 @@ export const CommonConstants = {
   LEFT_PARENTHESIS: "(",
   RIGHT_PARENTHESIS: ")",
   X_SYMBOL_TO_CLOSE_MODALS: "×",
-  INVERSE: "1/x"
+  INVERSE: "1/x",
+  SHIFT_KEY_TEXT: "2ⁿᵈ"
 };
