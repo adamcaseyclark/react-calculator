@@ -87,17 +87,17 @@ node {
                         .
                     """
 
-//                     timeout(3) {
-//                         waitUntil {
-//                             script {
-//                                 def localhost3000IsNowRunning = sh(
-//                                     script: "wget -q http://localhost:${portForCalculator} -O /dev/null",
-//                                     returnStatus: true
-//                                 )
-//                                 return (localhost3000IsNowRunning == 0);
-//                             }
-//                         }
-//                     }
+                    timeout(3) {
+                        waitUntil {
+                            script {
+                                def localhost3000IsNowRunning = sh(
+                                    script: "wget -q http://localhost:${portForCalculator} -O /dev/null",
+                                    returnStatus: true
+                                )
+                                return (localhost3000IsNowRunning == 0);
+                            }
+                        }
+                    }
 
                     sh 'cd code && find ./cypress/integration/ -name "*.spec.js" > ../listOfFiles'
                     def testFiles = readFile("listOfFiles").split().toList();
