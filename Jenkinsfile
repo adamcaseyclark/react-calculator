@@ -42,9 +42,9 @@ node {
         postBuildStatusToGithub("pending", "The build is pending!");
     }
 
-//     stage('Build') {
-//         sh "docker build -f docker/Dockerfile -t ${PROJECT_NAME}:${GIT_HASH} --build-arg BUILD_DATE=\"${BUILD_DATE}\" --build-arg GIT_HASH=${GIT_HASH} --force-rm=true --no-cache=true --pull=true --rm=true ."
-//     }
+    stage('Build') {
+        sh "docker build -f docker/Dockerfile -t ${PROJECT_NAME}:${GIT_HASH} --build-arg BUILD_DATE=\"${BUILD_DATE}\" --build-arg GIT_HASH=${GIT_HASH} --force-rm=true --no-cache=true --pull=true --rm=true ."
+    }
 
     stage('Test') {
         timestamps {
