@@ -5,6 +5,11 @@ BRANCH_NAME="master"
 GIT_HASH=""
 
 node {
+
+    stage('Cleanup Any Remaining Assets') {
+        sh(script: 'docker system prune -a --volumes -f', returnStdout: true)
+    }
+
     stage('Git') {
         checkout([
             $class: 'GitSCM',
@@ -24,8 +29,8 @@ node {
             ]
         ])
 
-        GIT_HASH = sh(script: 'git rev-parse HEAD',returnStdout: true).trim()
-        BUILD_DATE = sh(script: 'date -u',returnStdout: true).trim()
+        GIT_HASH = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
+        BUILD_DATE = sh(script: 'date -u', returnStdout: true).trim()
 
         sh "echo GIT_HASH is: ${GIT_HASH}"
         sh "echo BUILD_DATE is: ${BUILD_DATE}"
@@ -72,7 +77,7 @@ node {
                     // sh "docker run -d ${PROJECT_NAME}:${GIT_HASH}"
 
                     sh """
-                        GIT_HASH=${GIT_HASH} PORT_FOR_CALCULATOR=${portForCalculator} \
+                    GIT_HASH=${GIT_HASH} PORT_FOR_CALCULATOR=${portForCalculator} \
                         docker-compose -f docker/cypress-test.yml -p ${BUILD_PREFIX} up -d
                     """
 
