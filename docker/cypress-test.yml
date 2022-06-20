@@ -1,8 +1,5 @@
 version: "3.7"
 
-networks:
-  calculator-cypressnet:
-
 services:
   calculator:
     ports:

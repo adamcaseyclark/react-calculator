@@ -74,12 +74,12 @@ node {
 
                     BUILD_PREFIX = "${PROJECT_NAME}-${GIT_HASH}"
 
-                    // sh "docker run -d ${PROJECT_NAME}:${GIT_HASH}"
+                    sh "docker run -d ${PROJECT_NAME}:${GIT_HASH} -name ${BUILD_PREFIX}"
 
-                    sh """
-                    GIT_HASH=${GIT_HASH} PORT_FOR_CALCULATOR=${portForCalculator} \
-                        docker-compose -f docker/cypress-test.yml -p ${BUILD_PREFIX} up -d
-                    """
+                    // sh """
+                    // GIT_HASH=${GIT_HASH} PORT_FOR_CALCULATOR=${portForCalculator} \
+                    //      docker-compose -f docker/cypress-test.yml -p ${BUILD_PREFIX} up -d
+                    // """
 
                     PROJECT_BUILD_NAME = "${PROJECT_NAME}-${BUILD_NUMBER}"
 
