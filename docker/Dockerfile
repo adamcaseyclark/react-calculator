@@ -1,15 +1,15 @@
 FROM ubuntu:18.04
 
-# Keep upstart quiet
-RUN dpkg-divert --local --rename --add /sbin/initctl
-RUN ln -sf /bin/true /sbin/initctl
-
-# Disable tty
-ENV DEBIAN_FRONTEND noninteractive
-
-# Fix apt
-RUN echo "Acquire::http::No-Cache true;" | tee /etc/apt/apt.conf \
-    && echo "Acquire::http::Pipeline-Depth 0;" | tee /etc/apt/apt.conf
+## Keep upstart quiet
+#RUN dpkg-divert --local --rename --add /sbin/initctl
+#RUN ln -sf /bin/true /sbin/initctl
+#
+## Disable tty
+#ENV DEBIAN_FRONTEND noninteractive
+#
+## Fix apt
+#RUN echo "Acquire::http::No-Cache true;" | tee /etc/apt/apt.conf \
+#    && echo "Acquire::http::Pipeline-Depth 0;" | tee /etc/apt/apt.conf
 
 # Fetch updates / installations
 RUN apt-get update --fix-missing && apt-get install -y \
