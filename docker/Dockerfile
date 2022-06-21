@@ -1,6 +1,36 @@
-FROM node:14-alpine3.10
+FROM ubuntu:18.04
 
-RUN apk --no-cache add curl
+# Keep upstart quiet
+RUN dpkg-divert --local --rename --add /sbin/initctl
+RUN ln -sf /bin/true /sbin/initctl
+
+# Disable tty
+ENV DEBIAN_FRONTEND noninteractive
+
+# Fix apt
+RUN echo "Acquire::http::No-Cache true;" | tee /etc/apt/apt.conf \
+    && echo "Acquire::http::Pipeline-Depth 0;" | tee /etc/apt/apt.conf
+
+# Fetch updates / installations
+RUN apt-get update --fix-missing && apt-get install -y \
+    curl \
+    apt-transport-https \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install -y gnupg2
+
+# Node pre-install
+RUN curl -sS https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - \
+    && echo "deb https://deb.nodesource.com/node_8.x xenial main" | tee /etc/apt/sources.list.d/nodesource.list
+
+# Fetch updates / installations
+RUN apt-get update && apt-get install -y \
+    nodejs \
+    git \
+    ssh \
+    && rm -rf /var/lib/apt/lists/*
+
+FROM node:14
 
 RUN rm -rf /usr/local/lib/node_modules/npm \
   && mkdir /usr/local/lib/node_modules/npm \

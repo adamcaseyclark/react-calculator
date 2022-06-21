@@ -19,6 +19,6 @@ RUN apt-get update && \
     dbus-x11 \
     google-chrome-stable
 
-WORKDIR /opt/code
+WORKDIR /opt/tempus/code
 ENTRYPOINT ["npx", "cypress"]
 CMD ["run"]
