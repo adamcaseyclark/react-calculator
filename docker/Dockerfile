@@ -1,4 +1,4 @@
-FROM node:14-alpine
+FROM node:14-alpine3.10
 RUN rm -rf /usr/local/lib/node_modules/npm \
   && mkdir /usr/local/lib/node_modules/npm \
   && curl -sL https://github.com/npm/cli/archive/v7.1.0.tar.gz | tar xz -C /usr/local/lib/node_modules/npm --strip-components=1 \
