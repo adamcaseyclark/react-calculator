@@ -1,4 +1,4 @@
-FROM node:14-alpine3.10 \
+FROM node:14-alpine3.10
 
 RUN rm -rf /usr/local/lib/node_modules/npm \
   && mkdir /usr/local/lib/node_modules/npm \
